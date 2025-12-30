@@ -25,7 +25,7 @@ async function fetchFields() {
     const data = await response.json();
     console.log("awfwaf");
     console.log(data);
-    const fieldsElement = document.getElementById('campi-row');
+    const fieldsElement = document.getElementById('fields-row');
     data.forEach(field => {
         const fieldElement = document.createElement('div');
         fieldElement.innerHTML = `
