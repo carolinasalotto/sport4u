@@ -1,0 +1,14 @@
+#field-container{
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+    width: 100%;
+}
+
+#booking-container{
+    flex: 1;
+    border: 1px solid #00000050;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem;
+}

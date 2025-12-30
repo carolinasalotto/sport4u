@@ -1,0 +1,131 @@
+* {
+  box-sizing: border-box;
+}
+
+html{
+    font-size: 16px;
+}
+
+body{
+    max-width: 100vh;
+}
+
+
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    list-style: none;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.tab-button:hover {
+    color: #007bff;
+}
+
+.tab-button.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+.tab-container {
+    padding: 2rem;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 100%;
+}
+
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group select,
+.form-group input[type="date"],
+.form-group input[type="time"] {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.form-group select:focus,
+.form-group input[type="date"]:focus,
+.form-group input[type="time"]:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+
+
+
+.search-button {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.search-button:active {
+    background-color: #004085;
+}
+
+.field-img{
+    height: 200px;
+    
+}
+
+#campi-row{
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+}

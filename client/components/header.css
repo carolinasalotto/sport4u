@@ -1,0 +1,8 @@
+nav > ul{ 
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    list-style: none;
+    padding: 1rem;
+    margin: 0;
+}
