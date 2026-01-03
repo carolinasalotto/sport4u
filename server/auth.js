@@ -60,5 +60,49 @@ router.post("/signup", async (req, res) =>{
     }
 })
 
+// Get current user profile (requires authentication)
+router.get("/profile", async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        
+        if (!token) {
+            return res.status(401).json({ msg: "Not authenticated" });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+
+        const [rows] = await pool.query('SELECT id, username, name, surname, email FROM users WHERE id = ?', [userId]);
+        const user = rows[0];
+
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        res.json(user);
+    } catch (error) {
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({ msg: "Invalid or expired token" });
+        }
+        console.error(error);
+        res.status(500).json({ msg: "Internal Error" });
+    }
+});
+
+// Logout endpoint - clears the authentication cookie
+router.post("/logout", (req, res) => {
+    try {
+        // Clear the token cookie by setting it to expire immediately
+        res.cookie("token", "", {
+            httpOnly: true,
+            expires: new Date(0) // Set expiration to epoch time (past date)
+        });
+        res.json({ msg: "Logged out successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Internal Error" });
+    }
+});
+
   module.exports = router;
   

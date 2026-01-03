@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const app = express();
@@ -7,6 +8,8 @@ const port = process.env.PORT;
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+// Middleware to parse cookies
+app.use(cookieParser());
 
 app.use('/api/fields', require('./fields'));
 
