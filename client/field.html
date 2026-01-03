@@ -9,6 +9,26 @@
         <button id="back-button">Back</button>
         <div id="field-container">
             <div id="booking-container">
+                <div id="calendar">
+                    <div id="calendar-header">
+                        <button id="prev-month">←</button>
+                        <h3 id="month-year"></h3>
+                        <button id="next-month">→</button>
+                    </div>
+                    <div id="calendar-weekdays">
+                        <div class="weekday">Mon</div>
+                        <div class="weekday">Tue</div>
+                        <div class="weekday">Wed</div>
+                        <div class="weekday">Thu</div>
+                        <div class="weekday">Fri</div>
+                        <div class="weekday">Sat</div>
+                        <div class="weekday">Sun</div>
+                    </div>
+                    <div id="calendar-dates"></div>
+                </div>
+                <div id="available-slots">
+                </div>
+                <button onclick="bookField()">Book field</button>
             </div>
             <div id="field-info">
             </div>

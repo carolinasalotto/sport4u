@@ -6,6 +6,8 @@
 }
 
 #booking-container{
+    display: flex;
+    flex-direction: row;
     flex: 1;
     border: 1px solid #00000050;
     border-radius: 10px;
@@ -19,4 +21,120 @@
 .field-image{
     width: 100%;
 
+}
+
+/* Calendar Styles */
+#calendar {
+    width: 50%;
+}
+
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#calendar-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+#calendar-header button {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+#calendar-header button:hover {
+    background: #0056b3;
+}
+
+#calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.weekday {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #666;
+    padding: 0.5rem 0;
+}
+
+#calendar-dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.date-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.date-cell:hover {
+    background-color: #f0f0f0;
+    border-color: #007bff;
+}
+
+.date-cell.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: 600;
+}
+
+.date-cell.today {
+    border:  2px solid #28a745;
+    font-weight: 600;
+}
+
+.date-cell.today.selected {
+    border-color: #007bff;
+}
+
+.date-cell.empty {
+    border: none;
+    cursor: default;
+}
+
+.date-cell.empty:hover {
+    background-color: transparent;
+}
+
+.date-cell.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: #999;
+    background-color: #f5f5f5;
+}
+
+.date-cell.disabled:hover {
+    background-color: #f5f5f5;
+    border-color: transparent;
+}
+
+#available-slots{
+    width: 50%;
+    height:200px;
+}
+
+.selected-slot{
+    background-color: #0056b3;
 }
