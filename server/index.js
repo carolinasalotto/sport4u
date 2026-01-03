@@ -5,20 +5,24 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT;
 
+// Middleware to parse JSON request bodies
+app.use(express.json());
+
 app.use('/api/fields', require('./fields'));
+
+app.use('/api/auth', require('./auth'));
+
 
 // Route handler for field detail page
 app.get('/field/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/field.html'));
 });
 
+
 // Serve static files (frontend) - comes after API routes
 app.use(express.static(path.join(__dirname, '../client')));
 
 app.use('/uploads/fields', express.static(path.join(__dirname, 'uploads/fields')))
-
-
-
 
 
 

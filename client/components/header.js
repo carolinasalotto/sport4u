@@ -9,10 +9,21 @@ class AppHeader extends HTMLElement {
             <li>Manage tournaments</li>
             <li>My bookings</li>
         </ul>
+        <button id="login-button">Login</button>
       </nav>
     </header>
     `;
-  }
-}
-customElements.define('app-header', AppHeader);
+    const loginButton = document.getElementById('login-button');
+    loginButton.addEventListener('click', ()=>{
+        window.location.href = '/login.html';
+    });
+  
 
+  }
+
+}
+
+
+
+
+customElements.define('app-header', AppHeader);
