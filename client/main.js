@@ -19,7 +19,7 @@ tabButtons.forEach(button => {
 
 // Fetch fields
 async function fetchFields() {
-    const response = await fetch('/api/fields');
+    const response = await fetch('/api/fields?limit=6');
     const data = await response.json();
     console.log("awfwaf");
     console.log(data);

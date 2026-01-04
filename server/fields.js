@@ -9,7 +9,16 @@ const e = require('express');
 router.get('/', async (req, res) => {
     
     // Validate date query parameter
-    const { q } = req.query;
+    const { q, limit } = req.query;
+
+    let limit_condition = "";
+
+    const parsedLimit = Number(limit);
+    if( parsedLimit ){
+        limit_condition = " LIMIT ?";
+    }
+    console.log(limit_condition);
+    
 
     if(!q || q == ""){
 
@@ -23,7 +32,8 @@ router.get('/', async (req, res) => {
                 CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
             FROM fields f
             INNER JOIN addresses a ON f.address_id = a.id
-        `);
+            ${limit_condition}
+        `, [parsedLimit]);
         res.json(rows);
     }
     else{
@@ -39,7 +49,8 @@ router.get('/', async (req, res) => {
             FROM fields f
             INNER JOIN addresses a ON f.address_id = a.id
             WHERE f.name LIKE ?
-        `, [`%${q}%`]);
+            ${limit_condition}
+        `, [`%${q}%`, parsedLimit]);
         res.json(rows);
     }
 });
