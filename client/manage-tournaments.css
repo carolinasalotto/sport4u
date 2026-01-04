@@ -1,0 +1,178 @@
+.dialog-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-overlay.active {
+    display: flex;
+}
+
+.dialog-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 18px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+}
+
+.dialog-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dialog-content .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dialog-content .form-group label {
+    font-weight: 500;
+    color: #333;
+}
+
+.dialog-content .form-group input[type="text"],
+.dialog-content .form-group input[type="number"],
+.dialog-content .form-group input[type="date"],
+.dialog-content .form-group select,
+.dialog-content .form-group textarea {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+    width: 100%;
+    font-family: inherit;
+}
+
+.dialog-content .form-group input:focus,
+.dialog-content .form-group select:focus,
+.dialog-content .form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.dialog-buttons button {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#tournament-cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+#tournament-cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+#tournament-confirm-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+#tournament-confirm-btn:hover {
+    background-color: #0056b3;
+}
+
+#your-tournaments {
+    margin-top: 2rem;
+}
+
+#your-tournaments h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.tournaments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.tournament-card {
+    background-color: #f0f0f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000010;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tournament-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+}
+
+.tournament-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
+}
+
+.tournament-header h3 {
+    margin: 0;
+    color: #007bff;
+    font-size: 1.25rem;
+}
+
+.tournament-details {
+    margin-bottom: 1rem;
+}
+
+.tournament-details p {
+    margin: 0.75rem 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.tournament-details strong {
+    color: #333;
+    margin-right: 0.5rem;
+}
+
+.tournament-date {
+    font-size: 1.1rem;
+}
+
+.no-tournaments {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+#your-tournaments .error {
+    color: #dc3545;
+    padding: 1rem;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+    text-align: center;
+}
+

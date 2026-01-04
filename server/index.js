@@ -19,6 +19,7 @@ app.use('/api/whoami', require('./whoami'));
 
 app.use('/api/bookings', require('./bookings'));
 
+app.use('/api/tournaments', require('./tournaments'));
 // Route handler for field detail page
 app.get('/field/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/field.html'));

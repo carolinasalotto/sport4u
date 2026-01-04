@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/components/header.css">
+        <link rel="stylesheet" type="text/css" href="/manage-tournaments.css">
+    </head>
+    <body>
+        <app-header></app-header>
+
+        <h1>Create your Tournaments</h1>
+        <button id="create-tournament-btn">Create New Tournament</button>
+        <div id="your-tournaments">
+
+        </div>
+
+        <div id="tournament-dialog" class="dialog-overlay">
+            <div class="dialog-content">
+                <form id="tournament-form">
+                    <div class="form-group">
+                        <label for="tournament-name">Name</label>
+                        <input type="text" id="tournament-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tournament-sport">Sport</label>
+                        <select id="tournament-sport" name="sport" required>
+                            <option value="">Select sport</option>
+                            <option value="football">Football</option>
+                            <option value="volleyball">Volleyball</option>
+                            <option value="basketball">Basketball</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tournament-max-teams">Maximum number of teams</label>
+                        <input type="number" id="tournament-max-teams" name="maxTeams" min="2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tournament-start-date">Start date</label>
+                        <input type="date" id="tournament-start-date" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tournament-description">Description</label>
+                        <textarea id="tournament-description" name="description" rows="4"></textarea>
+                    </div>
+                    <div class="dialog-buttons">
+                        <button type="button" id="tournament-cancel-btn">Cancel</button>
+                        <button type="submit" id="tournament-confirm-btn">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script src="./auth.js"></script>
+        <script src="./components/header.js"></script>
+        <script src="manage-tournaments.js"></script>
+    </body>
+
+</html>

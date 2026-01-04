@@ -8,7 +8,7 @@ class AppHeader extends HTMLElement {
         <ul>
             <li><a href="/index.html">Home</a></li>
             <li>Find tournaments</li>
-            <li>Manage tournaments</li>
+            <li id="manage-tournaments-link">Manage tournaments</li>
             <li id="my-bookings-link">My bookings</li>
         </ul>
         <button id="login-button">Login</button>
@@ -47,7 +47,24 @@ class AppHeader extends HTMLElement {
       
         window.location.href = '/mybookings.html';
     });
-  }
+  
+
+   // Make "Manage tournaments" clickable
+   const manageTournamentsLink = document.getElementById('manage-tournaments-link');
+   manageTournamentsLink.style.cursor = 'pointer';
+   manageTournamentsLink.addEventListener('click', async () => {
+
+     const authStatus = await checkLogin();
+   
+     if (!authStatus.isLoggedIn) {
+         // Redirect to login page if not authenticated
+         window.location.href = '/login.html';
+         return;
+     }
+     
+       window.location.href = '/manage-tournaments.html';
+   });
+ }
 
   updateHeaderUI(authStatus) {
     const loginButton = document.getElementById('login-button');
