@@ -96,6 +96,23 @@
     background-color: #0056b3;
 }
 
+#tournament-delete-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s;
+}
+
+#tournament-delete-btn:hover {
+    color: #c82333;
+}
+
 #your-tournaments {
     margin-top: 2rem;
 }
@@ -191,5 +208,96 @@
     border-radius: 4px;
     border: 1px solid #f5c6cb;
     text-align: center;
+}
+
+/* Confirmation Dialog Styles */
+.dialog-overlay.show {
+    display: flex;
+}
+
+.dialog-modal {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    animation: slideIn 0.3s ease-out;
+}
+
+.dialog-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.dialog-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.dialog-body {
+    padding: 1.5rem;
+}
+
+.dialog-body p {
+    margin: 0;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.dialog-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.dialog-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.dialog-btn:hover {
+    transform: translateY(-1px);
+}
+
+.dialog-btn:active {
+    transform: translateY(0);
+}
+
+.dialog-btn-primary {
+    background-color: #dc3545;
+    color: white;
+}
+
+.dialog-btn-primary:hover {
+    background-color: #c82333;
+}
+
+.dialog-btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.dialog-btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 

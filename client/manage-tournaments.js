@@ -6,12 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const createBtn = document.getElementById('create-tournament-btn');
     const dialog = document.getElementById('tournament-dialog');
     const cancelBtn = document.getElementById('tournament-cancel-btn');
+    const deleteBtn = document.getElementById('tournament-delete-btn');
     const form = document.getElementById('tournament-form');
 
     createBtn.addEventListener('click', () => {
         editingTournamentId = null;
         form.reset();
         document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+        deleteBtn.style.display = 'none';
         dialog.classList.add('active');
     });
 
@@ -20,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         editingTournamentId = null;
         document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+        deleteBtn.style.display = 'none';
     });
 
     dialog.addEventListener('click', (e) => {
@@ -28,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             form.reset();
             editingTournamentId = null;
             document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+            deleteBtn.style.display = 'none';
         }
     });
 
@@ -68,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 form.reset();
                 editingTournamentId = null;
                 document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+                deleteBtn.style.display = 'none';
                 await loadTournaments();
             } else {
                 const error = await response.json();
@@ -79,7 +84,106 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Connection error. Please try again later.');
         }
     });
+
+    deleteBtn.addEventListener('click', () => {
+        if (!editingTournamentId) return;
+        deleteTournament(editingTournamentId);
+    });
 });
+
+// Perform the actual deletion
+async function performDeleteTournament(tournamentId) {
+    const dialog = document.getElementById('tournament-dialog');
+    const form = document.getElementById('tournament-form');
+    const deleteBtn = document.getElementById('tournament-delete-btn');
+    
+    try {
+        const response = await fetch(`/api/tournaments/${tournamentId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            console.error('Error deleting tournament:', error);
+            alert(error.error || 'Failed to delete tournament');
+            return;
+        }
+        
+        const result = await response.json();
+        console.log('Tournament deleted:', result);
+        dialog.classList.remove('active');
+        form.reset();
+        editingTournamentId = null;
+        document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+        deleteBtn.style.display = 'none';
+        await loadTournaments();
+    } catch (error) {
+        console.error('Error deleting tournament:', error);
+        alert('Connection error. Please try again later.');
+    }
+}
+
+// Show delete confirmation dialog
+async function deleteTournament(tournamentId) {
+    // Check if dialog already exists, if not create it
+    let confirmDialog = document.getElementById('confirm-delete-dialog');
+    
+    if (!confirmDialog) {
+        // Create overlay
+        confirmDialog = document.createElement('div');
+        confirmDialog.id = 'confirm-delete-dialog';
+        confirmDialog.className = 'dialog-overlay';
+        
+        // Set innerHTML with dialog structure
+        confirmDialog.innerHTML = `
+            <div class="dialog-modal">
+                <div class="dialog-header">
+                    <h3>Delete Tournament</h3>
+                </div>
+                <div class="dialog-body">
+                    <p>Are you sure you want to delete this tournament? This action cannot be undone.</p>
+                </div>
+                <div class="dialog-footer">
+                    <button id="dialog-cancel-btn" class="dialog-btn dialog-btn-secondary">No, Keep Tournament</button>
+                    <button id="dialog-confirm-btn" class="dialog-btn dialog-btn-primary">Yes, Delete Tournament</button>
+                </div>
+            </div>
+        `;
+        
+        // Attach event listeners
+        const cancelBtn = confirmDialog.querySelector('#dialog-cancel-btn');
+        const confirmBtn = confirmDialog.querySelector('#dialog-confirm-btn');
+        
+        cancelBtn.addEventListener('click', () => {
+            confirmDialog.classList.remove('show');
+        });
+        
+        confirmBtn.addEventListener('click', () => {
+            const id = confirmDialog.dataset.tournamentId;
+            if (id) {
+                confirmDialog.classList.remove('show');
+                performDeleteTournament(parseInt(id));
+            }
+        });
+        
+        // Close dialog when clicking outside
+        confirmDialog.addEventListener('click', (e) => {
+            if (e.target === confirmDialog) {
+                confirmDialog.classList.remove('show');
+            }
+        });
+        
+        // Append to body
+        document.body.appendChild(confirmDialog);
+    }
+    
+    // Store tournament ID in dataset
+    confirmDialog.dataset.tournamentId = tournamentId;
+    
+    // Show dialog
+    confirmDialog.classList.add('show');
+}
 
 // Check if user is logged in, redirect if not
 async function checkAuthAndLoadTournaments() {
@@ -138,6 +242,9 @@ function openEditTournamentForm(tournamentData) {
     
     // Update button text
     document.getElementById('tournament-confirm-btn').textContent = 'Save Changes';
+    
+    // Show delete button
+    document.getElementById('tournament-delete-btn').style.display = 'block';
     
     // Show dialog
     dialog.classList.add('active');

@@ -104,5 +104,37 @@ router.put('/:id', authenticateUser, async (req, res) => {
     }
 });
 
+// Delete tournament
+router.delete('/:id', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const tournamentId = parseInt(req.params.id);
+        
+        // Check if tournament exists and belongs to user
+        const [tournamentRows] = await pool.query(
+            'SELECT id FROM tournaments WHERE id = ? AND created_by = ?',
+            [tournamentId, userId]
+        );
+        
+        if (tournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found or you do not have permission to delete it' });
+        }
+        
+        // Delete tournament
+        await pool.query(
+            'DELETE FROM tournaments WHERE id = ? AND created_by = ?',
+            [tournamentId, userId]
+        );
+        
+        res.json({ 
+            message: 'Tournament deleted successfully',
+            tournamentId: tournamentId
+        });
+    } catch (error) {
+        console.error('Error deleting tournament:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
 
