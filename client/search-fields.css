@@ -1,0 +1,70 @@
+#search-fields-form{
+    max-width: 700px;
+    margin: 2rem 0;
+}
+
+#fields-results {
+    margin-top: 2rem;
+    max-width: 1200px;
+}
+
+#fields-results h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.field-card {
+    background-color: #f0f0f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000010;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.field-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+}
+
+.field-card h3 {
+    margin: 0 0 1rem 0;
+    color: #007bff;
+    font-size: 1.25rem;
+}
+
+.field-card p {
+    margin: 0.5rem 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.field-card .view-details-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.field-card .view-details-btn:hover {
+    background-color: #0056b3;
+}
+
+#fields-results .error {
+    color: #dc3545;
+    padding: 1rem;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+}

@@ -38,3 +38,22 @@ async function fetchFields() {
 }
 
 fetchFields();
+
+document.getElementById('book-fields-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+
+    // Get form values by element id
+    const city = document.getElementById('city').value;
+    const sport = document.getElementById('sport').value;
+    const date = document.getElementById('date').value;
+    const hour = document.getElementById('hour').value;
+    
+    if (city) params.set('city', city);
+    if (sport) params.set('sport', sport);
+    if (date) params.set('date', date);
+    if (hour) params.set('hour', hour);
+    
+    // Navigate to search-fields.html with params
+    window.location.href = 'search-fields.html?' + params.toString();
+});

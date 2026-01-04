@@ -2,7 +2,7 @@
 const id = window.location.pathname.split('/').pop();
 const backButton = document.getElementById('back-button');
 backButton.addEventListener('click', () => {
-    window.location.href = '/';
+    window.history.go(-1);
 });
 let selected_slot = [];
 const available_slots = document.getElementById('available-slots');

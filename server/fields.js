@@ -83,7 +83,79 @@ router.get('/:id/:date', async (req, res) =>{
 })
 
 
-
+//get all fields based on city, sport, date and hour
+router.post('/search-fields', async (req, res) => {
+    try {
+        const { city, sport, date, hour } = req.body;
+        
+        // Validate required parameters
+        if (!city || !sport || !date || !hour) {
+            return res.status(400).json({ error: 'Missing required parameters: city, sport, date, hour' });
+        }
+        
+        // Parse date from yyyy-mm-dd (HTML date input format) to MySQL format
+        // Also parse hour to integer
+        const requestedHour = parseInt(hour);
+        if (isNaN(requestedHour) || requestedHour < 0 || requestedHour > 23) {
+            return res.status(400).json({ error: 'Invalid hour' });
+        }
+        
+        // Create datetime string for the requested booking start time
+        const requestedDatetime = `${date} ${String(requestedHour).padStart(2, '0')}:00:00`;
+        const requestedEndDatetime = `${date} ${String(requestedHour + 1).padStart(2, '0')}:00:00`;
+        
+        // Query to find available fields
+        // Fields must:
+        // 1. Match the city and sport
+        // 2. Be open at the requested hour (open_from <= hour < open_till)
+        // 3. Not have any overlapping bookings
+        const query = `
+            SELECT 
+                f.id,
+                f.name,
+                f.sport,
+                f.open_from,
+                f.open_till,
+                a.id AS address_id,
+                a.city,
+                a.street,
+                a.street_number,
+                a.zip_code,
+                CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
+            FROM fields f
+            INNER JOIN addresses a ON f.address_id = a.id
+            WHERE 
+                LOWER(a.city) = LOWER(?)
+                AND f.sport = ?
+                AND TIME(STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')) >= f.open_from
+                AND TIME(STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')) <= f.open_till
+                AND NOT EXISTS (
+                    SELECT 1 
+                    FROM bookings b
+                    WHERE b.field_id = f.id
+                    -- Check if time intervals overlap
+                    -- Two intervals overlap if: start1 < end2 AND start2 < end1
+                    AND b.booked_datetime < STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')
+                    AND DATE_ADD(b.booked_datetime, INTERVAL b.duration MINUTE) > STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')
+                )
+            ORDER BY f.name
+        `;
+        
+        const [rows] = await pool.query(query, [
+            city,
+            sport,
+            requestedDatetime, // for open_from check
+            requestedEndDatetime, // for open_till check
+            requestedEndDatetime, // for booking overlap check (booking end > requested start)
+            requestedDatetime // for booking overlap check (booking start < requested end)
+        ]);
+        
+        res.json(rows);
+    } catch (error) {
+        console.error('Error searching fields:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;
 
