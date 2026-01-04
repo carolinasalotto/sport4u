@@ -60,5 +60,49 @@ router.post('/', authenticateUser, async (req, res) => {
     }
 });
 
+// Update tournament
+router.put('/:id', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const tournamentId = parseInt(req.params.id);
+        const { name, sport, maxTeams, startDate, description } = req.body;
+        
+        // Validate required fields
+        if (!name || !sport || !maxTeams || !startDate) {
+            return res.status(400).json({ error: 'Missing required fields: name, sport, maxTeams, startDate' });
+        }
+        
+        // Validate maxTeams is a positive integer
+        const maxTeamsNum = parseInt(maxTeams);
+        if (isNaN(maxTeamsNum) || maxTeamsNum < 2) {
+            return res.status(400).json({ error: 'maxTeams must be a number >= 2' });
+        }
+        
+        // Check if tournament exists and belongs to user
+        const [tournamentRows] = await pool.query(
+            'SELECT id FROM tournaments WHERE id = ? AND created_by = ?',
+            [tournamentId, userId]
+        );
+        
+        if (tournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found or you do not have permission to edit it' });
+        }
+        
+        // Update tournament
+        await pool.query(
+            'UPDATE tournaments SET name = ?, sport = ?, max_teams = ?, start_date = ?, description = ? WHERE id = ? AND created_by = ?',
+            [name, sport, maxTeamsNum, startDate, description || null, tournamentId, userId]
+        );
+        
+        res.json({ 
+            message: 'Tournament updated successfully',
+            tournamentId: tournamentId
+        });
+    } catch (error) {
+        console.error('Error updating tournament:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
 

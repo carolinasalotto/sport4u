@@ -1,3 +1,5 @@
+let editingTournamentId = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthAndLoadTournaments();
     
@@ -7,18 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('tournament-form');
 
     createBtn.addEventListener('click', () => {
+        editingTournamentId = null;
+        form.reset();
+        document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
         dialog.classList.add('active');
     });
 
     cancelBtn.addEventListener('click', () => {
         dialog.classList.remove('active');
         form.reset();
+        editingTournamentId = null;
+        document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
     });
 
     dialog.addEventListener('click', (e) => {
         if (e.target === dialog) {
             dialog.classList.remove('active');
             form.reset();
+            editingTournamentId = null;
+            document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
         }
     });
 
@@ -31,9 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const startDate = document.getElementById('tournament-start-date').value;
         const description = document.getElementById('tournament-description').value;
         
+        const url = editingTournamentId 
+            ? `/api/tournaments/${editingTournamentId}`
+            : '/api/tournaments';
+        const method = editingTournamentId ? 'PUT' : 'POST';
+        
         try {
-            const response = await fetch('/api/tournaments', {
-                method: 'POST',
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -49,17 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (response.ok) {
                 const result = await response.json();
-                console.log('Tournament created:', result);
+                console.log(editingTournamentId ? 'Tournament updated:' : 'Tournament created:', result);
                 dialog.classList.remove('active');
                 form.reset();
+                editingTournamentId = null;
+                document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
                 await loadTournaments();
             } else {
                 const error = await response.json();
-                console.error('Error creating tournament:', error);
-                alert(error.error || 'Failed to create tournament');
+                console.error(editingTournamentId ? 'Error updating tournament:' : 'Error creating tournament:', error);
+                alert(error.error || (editingTournamentId ? 'Failed to update tournament' : 'Failed to create tournament'));
             }
         } catch (error) {
-            console.error('Error creating tournament:', error);
+            console.error(editingTournamentId ? 'Error updating tournament:' : 'Error creating tournament:', error);
             alert('Connection error. Please try again later.');
         }
     });
@@ -105,6 +121,28 @@ async function loadTournaments() {
     }
 }
 
+// Open edit tournament form with pre-filled data
+function openEditTournamentForm(tournamentData) {
+    const dialog = document.getElementById('tournament-dialog');
+    const form = document.getElementById('tournament-form');
+    
+    // Store the tournament ID for the update operation
+    editingTournamentId = tournamentData.id;
+    
+    // Fill form fields with tournament data
+    document.getElementById('tournament-name').value = tournamentData.name;
+    document.getElementById('tournament-sport').value = tournamentData.sport;
+    document.getElementById('tournament-max-teams').value = tournamentData.maxTeams;
+    document.getElementById('tournament-start-date').value = tournamentData.startDate;
+    document.getElementById('tournament-description').value = tournamentData.description || '';
+    
+    // Update button text
+    document.getElementById('tournament-confirm-btn').textContent = 'Save Changes';
+    
+    // Show dialog
+    dialog.classList.add('active');
+}
+
 // Display tournaments in the UI
 function displayTournaments(tournaments) {
     const container = document.getElementById('your-tournaments');
@@ -123,6 +161,9 @@ function displayTournaments(tournaments) {
             day: 'numeric' 
         });
         
+        // Format date for input field (YYYY-MM-DD)
+        const dateInputValue = tournament.start_date.split('T')[0];
+        
         tournamentsHTML += `
             <div class="tournament-card">
                 <div class="tournament-header">
@@ -133,6 +174,13 @@ function displayTournaments(tournaments) {
                     <p class="tournament-date"><strong>Start Date:</strong> ${dateStr}</p>
                     <p class="tournament-teams"><strong>Max Teams:</strong> ${tournament.max_teams}</p>
                     ${tournament.description ? `<p class="tournament-description"><strong>Description:</strong> ${tournament.description}</p>` : ''}
+                    <button class="edit-tournament-btn"
+                            data-tournament-id="${tournament.id}" 
+                            data-tournament-name="${tournament.name}" 
+                            data-tournament-sport="${tournament.sport}" 
+                            data-tournament-max-teams="${tournament.max_teams}" 
+                            data-tournament-start-date="${dateInputValue}" 
+                            data-tournament-description="${tournament.description || ''}">Edit</button>
                 </div>
             </div>
         `;
@@ -144,5 +192,20 @@ function displayTournaments(tournaments) {
             ${tournamentsHTML}
         </div>
     `;
+    
+    // Add event listeners to edit buttons
+    document.querySelectorAll('.edit-tournament-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tournamentData = {
+                id: btn.getAttribute('data-tournament-id'),
+                name: btn.getAttribute('data-tournament-name'),
+                sport: btn.getAttribute('data-tournament-sport'),
+                maxTeams: btn.getAttribute('data-tournament-max-teams'),
+                startDate: btn.getAttribute('data-tournament-start-date'),
+                description: btn.getAttribute('data-tournament-description')
+            };
+            openEditTournamentForm(tournamentData);
+        });
+    });
 }
 

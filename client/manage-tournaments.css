@@ -156,6 +156,23 @@
     margin-right: 0.5rem;
 }
 
+.edit-tournament-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.edit-tournament-btn:hover {
+    background-color: #0056b3;
+}
+
 .tournament-date {
     font-size: 1.1rem;
 }
