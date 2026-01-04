@@ -7,8 +7,41 @@ const e = require('express');
 
 //get all fields
 router.get('/', async (req, res) => {
-    const [rows] = await pool.query('SELECT * FROM fields');
-    res.json(rows);
+    
+    // Validate date query parameter
+    const { q } = req.query;
+
+    if(!q || q == ""){
+
+        const [rows] = await pool.query(`
+            SELECT 
+                f.*,
+                a.city,
+                a.street,
+                a.street_number,
+                a.zip_code,
+                CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
+            FROM fields f
+            INNER JOIN addresses a ON f.address_id = a.id
+        `);
+        res.json(rows);
+    }
+    else{
+
+        const [rows] = await pool.query(`
+            SELECT 
+                f.*,
+                a.city,
+                a.street,
+                a.street_number,
+                a.zip_code,
+                CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
+            FROM fields f
+            INNER JOIN addresses a ON f.address_id = a.id
+            WHERE f.name LIKE ?
+        `, [`%${q}%`]);
+        res.json(rows);
+    }
 });
 
 //get info based on id

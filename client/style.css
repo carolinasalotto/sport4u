@@ -148,3 +148,10 @@ body{
     flex-direction: row;
     gap: 1.5rem;
 }
+
+#fileds-title-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
