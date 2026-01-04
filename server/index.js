@@ -17,6 +17,8 @@ app.use('/api/auth', require('./auth'));
 
 app.use('/api/whoami', require('./whoami'));
 
+app.use('/api/bookings', require('./bookings'));
+
 // Route handler for field detail page
 app.get('/field/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/field.html'));

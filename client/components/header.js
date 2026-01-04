@@ -1,17 +1,20 @@
+
+
 class AppHeader extends HTMLElement {
   async connectedCallback(){
     this.innerHTML = `
     <header class="app-header">
       <nav>
         <ul>
-            <li>Home</li>
+            <li><a href="/index.html">Home</a></li>
             <li>Find tournaments</li>
             <li>Manage tournaments</li>
-            <li>My bookings</li>
+            <li id="my-bookings-link">My bookings</li>
         </ul>
         <button id="login-button">Login</button>
       </nav>
     </header>
+    
     `;
     
     // Check login status and update UI
@@ -27,6 +30,22 @@ class AppHeader extends HTMLElement {
             // Redirect to login page
             window.location.href = '/login.html';
         }
+    });
+    
+    // Make "My bookings" clickable
+    const myBookingsLink = document.getElementById('my-bookings-link');
+    myBookingsLink.style.cursor = 'pointer';
+    myBookingsLink.addEventListener('click', async () => {
+
+      const authStatus = await checkLogin();
+    
+      if (!authStatus.isLoggedIn) {
+          // Redirect to login page if not authenticated
+          window.location.href = '/login.html';
+          return;
+      }
+      
+        window.location.href = '/mybookings.html';
     });
   }
 

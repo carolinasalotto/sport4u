@@ -209,7 +209,28 @@ router.post('/:id/bookings', authenticateUser, async (req, res) => {
     }
 })
 
+//delete booking
+router.delete('/:id/bookings/:bookingId', authenticateUser, async(req, res) => {
+    try {
+        const bookingId = req.params.bookingId;
+        const userId = req.userId;
+        const [rows] = await pool.query('SELECT booked_by FROM bookings WHERE id=?', [bookingId]);
 
+        if(rows.length <= 0){
+            return res.status(404).json({error: "Booking not found"});
+        }
+        if(userId != rows[0].booked_by){
+            return res.status(401).json({error: "Booking not created by this user"});
+        }
+
+        await pool.query('DELETE FROM bookings WHERE id=?', [bookingId]);
+
+        res.json({msg: "Delete successful"});
+    } catch (error) {
+        console.error('Error deleting booking:', error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
 
 module.exports = router;
 
