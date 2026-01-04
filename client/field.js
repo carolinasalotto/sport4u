@@ -6,6 +6,7 @@ backButton.addEventListener('click', () => {
 });
 let selected_slots = [];
 const available_slots = document.getElementById('available-slots');
+const bookFieldButton = document.getElementById('book-field-button');
 
 // Read date and hour from URL parameters
 const urlParams = new URLSearchParams(window.location.search);
@@ -31,6 +32,9 @@ function removeSeconds(time){
     return time.split(":")[0] + ":" + time.split(":")[1];
 }
 fetchFieldInfo(id);
+
+// Initialize book button state (disabled by default)
+updateBookButtonState();
 
 // Calendar functionality
 // Initialize currentDate and selectedDate from URL parameters if available
@@ -146,6 +150,7 @@ function renderCalendar() {
                 selectedDate = new Date(year, month, day);
                 displayAvailableSlots(selectedDate, id);
                 selected_slots = [];
+                updateBookButtonState();
             });
         }
         
@@ -203,6 +208,7 @@ async function displayAvailableSlots(date, id, preselectedHour = null){
 
             selected_slots.sort((a, b) => a - b);
             updateSlotButtonStates();
+            updateBookButtonState();
         })
     });
     
@@ -211,6 +217,8 @@ async function displayAvailableSlots(date, id, preselectedHour = null){
         selected_slots.sort((a, b) => a - b);
         updateSlotButtonStates();
     }
+    
+    updateBookButtonState();
 }
 
 function formattedSlot(slot){
@@ -222,6 +230,13 @@ function formattedSlot(slot){
         string_slot = String(slot)+":00";
     }
     return string_slot;
+}
+
+// Update book field button state
+function updateBookButtonState() {
+    if (bookFieldButton) {
+        bookFieldButton.disabled = selected_slots.length === 0 || !selectedDate;
+    }
 }
 
 // Update button states based on selected slots
@@ -292,6 +307,7 @@ async function bookField(){
         });
         
         if (response.ok) {
+            window.location.href = '/mybookings.html';
         } else {
             const error = await response.json();
         }
@@ -304,4 +320,5 @@ function clearSelectedSlots(){
     selectedDate = null;
     selected_slots = [];
     available_slots.innerHTML = "";
+    updateBookButtonState();
 }

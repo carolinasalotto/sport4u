@@ -294,7 +294,6 @@ function displayTournaments(tournaments) {
     });
     
     container.innerHTML = `
-        <h2>Your Tournaments (${tournaments.length})</h2>
         <div class="tournaments-grid">
             ${tournamentsHTML}
         </div>
