@@ -7,6 +7,11 @@ backButton.addEventListener('click', () => {
 let selected_slots = [];
 const available_slots = document.getElementById('available-slots');
 
+// Read date and hour from URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const urlDate = urlParams.get('date');
+const urlHour = urlParams.get('hour');
+
 // Fetch field info
 async function fetchFieldInfo(id) {
     const response = await fetch(`/api/fields/${id}`);
@@ -28,8 +33,18 @@ function removeSeconds(time){
 fetchFieldInfo(id);
 
 // Calendar functionality
+// Initialize currentDate and selectedDate from URL parameters if available
 let currentDate = new Date();
 let selectedDate = currentDate;
+
+if (urlDate) {
+    // Parse the date from URL (format: YYYY-MM-DD)
+    const [year, month, day] = urlDate.split('-').map(Number);
+    selectedDate = new Date(year, month - 1, day); // month is 0-indexed
+    selectedDate.setHours(0, 0, 0, 0);
+    // Set currentDate to show the month of the selected date
+    currentDate = new Date(year, month - 1, 1);
+}
 
 function initCalendar() {
     const prevButton = document.getElementById('prev-month');
@@ -141,8 +156,17 @@ function renderCalendar() {
 // Initialize calendar when page loads
 initCalendar();
 
+// If URL parameters are provided, display slots for the selected date and hour
+if (urlDate && selectedDate) {
+    // Wait for calendar to render, then display slots
+    setTimeout(() => {
+        displayAvailableSlots(selectedDate, id, urlHour);
+    }, 100);
+} else {
+    displayAvailableSlots(new Date(), id);
+}
 
-async function displayAvailableSlots(date, id){
+async function displayAvailableSlots(date, id, preselectedHour = null){
     // format date as YYYY-MM-DD
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
@@ -162,6 +186,12 @@ async function displayAvailableSlots(date, id){
         button.id = "slot-button-"+slot;
         available_slots.appendChild(button);
         
+        // If this slot matches the preselected hour, select it
+        if (preselectedHour !== null && slot === parseInt(preselectedHour)) {
+            button.classList.add('selected-slot');
+            selected_slots.push(slot);
+        }
+        
         button.addEventListener('click', ()=>{
             button.classList.toggle('selected-slot');
             if (selected_slots.includes(slot)){
@@ -172,37 +202,15 @@ async function displayAvailableSlots(date, id){
             }
 
             selected_slots.sort((a, b) => a - b);
-
-            if(selected_slots.length===0){
-                // Update all buttons: enable only if adjacent to any selected slot
-                document.querySelectorAll('#available-slots button').forEach(btn => {
-                    btn.disabled = false;
-                });
-            }else{
-                // Update all buttons: enable only if adjacent to any selected slot
-                document.querySelectorAll('#available-slots button').forEach(btn => {
-                    btn.disabled = true;
-                });
-
-                const firstSlotBtn = document.getElementById('slot-button-' + (selected_slots[0]));
-                if (firstSlotBtn) firstSlotBtn.disabled = false;
-
-                const lastSlotBtn = document.getElementById('slot-button-' + (selected_slots[selected_slots.length-1]));
-                if (lastSlotBtn) lastSlotBtn.disabled = false;
-
-                const beforeFirstSlotBtn = document.getElementById('slot-button-' + (selected_slots[0] - 1));
-                if (beforeFirstSlotBtn) beforeFirstSlotBtn.disabled = false;
-
-                const afterLastSlotBtn = document.getElementById('slot-button-' + (selected_slots[selected_slots.length-1] + 1));
-                if (afterLastSlotBtn) afterLastSlotBtn.disabled = false;
-            }
-            
-
-
-
-
+            updateSlotButtonStates();
         })
     });
+    
+    // After slots are rendered, update button states if slots are preselected
+    if (preselectedHour !== null && selected_slots.length > 0) {
+        selected_slots.sort((a, b) => a - b);
+        updateSlotButtonStates();
+    }
 }
 
 function formattedSlot(slot){
@@ -216,7 +224,34 @@ function formattedSlot(slot){
     return string_slot;
 }
 
-displayAvailableSlots(new Date(), id);
+// Update button states based on selected slots
+function updateSlotButtonStates() {
+    if (selected_slots.length === 0) {
+        // Enable all buttons if no slots are selected
+        document.querySelectorAll('#available-slots button').forEach(btn => {
+            btn.disabled = false;
+        });
+    } else {
+        // Disable all buttons first
+        document.querySelectorAll('#available-slots button').forEach(btn => {
+            btn.disabled = true;
+        });
+
+        // Enable first and last selected slot buttons
+        const firstSlotBtn = document.getElementById('slot-button-' + (selected_slots[0]));
+        if (firstSlotBtn) firstSlotBtn.disabled = false;
+
+        const lastSlotBtn = document.getElementById('slot-button-' + (selected_slots[selected_slots.length-1]));
+        if (lastSlotBtn) lastSlotBtn.disabled = false;
+
+        // Enable adjacent buttons (before first and after last)
+        const beforeFirstSlotBtn = document.getElementById('slot-button-' + (selected_slots[0] - 1));
+        if (beforeFirstSlotBtn) beforeFirstSlotBtn.disabled = false;
+
+        const afterLastSlotBtn = document.getElementById('slot-button-' + (selected_slots[selected_slots.length-1] + 1));
+        if (afterLastSlotBtn) afterLastSlotBtn.disabled = false;
+    }
+}
 
 async function bookField(){
     // Validate that a date and slots are selected

@@ -88,14 +88,24 @@ function displayResults(fields) {
     }
     
     let fieldsHTML = '';
+    const urlParams = new URLSearchParams(window.location.search);
+    const date = urlParams.get('date');
+    const hour = urlParams.get('hour');
+    
     fields.forEach(field => {
+        // Build URL with date and hour parameters if they exist
+        let fieldUrl = `/field/${field.id}`;
+        if (date && hour) {
+            fieldUrl += `?date=${encodeURIComponent(date)}&hour=${encodeURIComponent(hour)}`;
+        }
+        
         fieldsHTML += `
             <div class="field-card">
                 <h3>${field.name}</h3>
                 <p><strong>Sport:</strong> ${field.sport}</p>
                 <p><strong>Address:</strong> ${field.full_address}</p>
                 <p><strong>Opening Hours:</strong> ${field.open_from} - ${field.open_till}</p>
-                <a href="/field/${field.id}" class="view-details-btn">View Details</a>
+                <a href="${fieldUrl}" class="view-details-btn">View Details</a>
             </div>
         `;
     });
