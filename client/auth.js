@@ -1,6 +1,6 @@
 async function checkLogin(){
     try{
-        const res = await fetch("/api/auth/profile", {
+        const res = await fetch("/api/whoami", {
             credentials: "include" //send cookies to backend
         })
         if(res.ok){

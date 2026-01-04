@@ -14,7 +14,7 @@ loginForm.addEventListener('submit', async (e) => {
 
     try {
         // TODO: Replace with actual API endpoint
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('/api/auth/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

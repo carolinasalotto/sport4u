@@ -4,7 +4,7 @@ const backButton = document.getElementById('back-button');
 backButton.addEventListener('click', () => {
     window.history.go(-1);
 });
-let selected_slot = [];
+let selected_slots = [];
 const available_slots = document.getElementById('available-slots');
 
 // Fetch field info
@@ -130,7 +130,7 @@ function renderCalendar() {
                 // Update selected date
                 selectedDate = new Date(year, month, day);
                 displayAvailableSlots(selectedDate, id);
-                selected_slot = [];
+                selected_slots = [];
             });
         }
         
@@ -143,13 +143,13 @@ initCalendar();
 
 
 async function displayAvailableSlots(date, id){
-    // format date as gg-mm-yyyy
+    // format date as YYYY-MM-DD
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
     const year = date.getFullYear();
-    const formatted_date = `${day}-${month}-${year}`;
+    const formatted_date = `${year}-${month}-${day}`;
 
-    const result = await fetch(`/api/fields/${id}/${formatted_date}`);
+    const result = await fetch(`/api/fields/${id}/slots?date=${formatted_date}`);
     const data = await result.json();
     
     
@@ -159,18 +159,50 @@ async function displayAvailableSlots(date, id){
         let string_slot = formattedSlot(slot) + " - " + formattedSlot(slot+1);
         const button = document.createElement('button');
         button.innerHTML = string_slot;
+        button.id = "slot-button-"+slot;
         available_slots.appendChild(button);
+        
         button.addEventListener('click', ()=>{
             button.classList.toggle('selected-slot');
-            if (selected_slot.includes(slot)){
-                selected_slot = selected_slot.filter(s => s !== slot);
+            if (selected_slots.includes(slot)){
+                selected_slots = selected_slots.filter(s => s !== slot);
             }
             else{
-                selected_slot.push(slot);
+                selected_slots.push(slot);
             }
+
+            selected_slots.sort((a, b) => a - b);
+
+            if(selected_slots.length===0){
+                // Update all buttons: enable only if adjacent to any selected slot
+                document.querySelectorAll('#available-slots button').forEach(btn => {
+                    btn.disabled = false;
+                });
+            }else{
+                // Update all buttons: enable only if adjacent to any selected slot
+                document.querySelectorAll('#available-slots button').forEach(btn => {
+                    btn.disabled = true;
+                });
+
+                const firstSlotBtn = document.getElementById('slot-button-' + (selected_slots[0]));
+                if (firstSlotBtn) firstSlotBtn.disabled = false;
+
+                const lastSlotBtn = document.getElementById('slot-button-' + (selected_slots[selected_slots.length-1]));
+                if (lastSlotBtn) lastSlotBtn.disabled = false;
+
+                const beforeFirstSlotBtn = document.getElementById('slot-button-' + (selected_slots[0] - 1));
+                if (beforeFirstSlotBtn) beforeFirstSlotBtn.disabled = false;
+
+                const afterLastSlotBtn = document.getElementById('slot-button-' + (selected_slots[selected_slots.length-1] + 1));
+                if (afterLastSlotBtn) afterLastSlotBtn.disabled = false;
+            }
+            
+
+
+
+
         })
     });
-    
 }
 
 function formattedSlot(slot){
@@ -186,12 +218,55 @@ function formattedSlot(slot){
 
 displayAvailableSlots(new Date(), id);
 
-function bookField(){
-    console.log(selected_slot);
+async function bookField(){
+    // Validate that a date and slots are selected
+    if (!selectedDate || selected_slots.length === 0) {
+        console.error('Cannot book: selectedDate =', selectedDate, 'selected_slots =', selected_slots);
+        return;
+    }
+    
+    // Ensure selectedDate is a valid Date object
+    if (!(selectedDate instanceof Date) || isNaN(selectedDate.getTime())) {
+        console.error('Invalid selectedDate:', selectedDate);
+        return;
+    }
+    
+    const start_hour = selected_slots[0];
+    const end_hour = selected_slots[selected_slots.length - 1] + 1; // Add 1 because end_hour should be exclusive
+    // Format date as YYYY-MM-DD (getMonth() returns 0-11, getDate() returns 1-31)
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(selectedDate.getDate()).padStart(2, '0');
+    const date = `${year}-${month}-${day}`;
+    
+    // Validate the formatted date
+    if (!date || date.includes('undefined') || date.includes('NaN')) {
+        console.error('Invalid date format:', date, 'from selectedDate:', selectedDate);
+        return;
+    }
+    
+    console.log('Booking request:', { date, start_hour, end_hour, field_id: id });
+    
+    try {
+        const response = await fetch(`/api/fields/${id}/bookings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({date, start_hour, end_hour}),
+        });
+        
+        if (response.ok) {
+        } else {
+            const error = await response.json();
+        }
+    } catch (error) {
+        console.error('Error booking field:', error);
+    }
 }
 
 function clearSelectedSlots(){
     selectedDate = null;
-    selected_slot = [];
+    selected_slots = [];
     available_slots.innerHTML = "";
 }

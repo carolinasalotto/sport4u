@@ -15,6 +15,7 @@ app.use('/api/fields', require('./fields'));
 
 app.use('/api/auth', require('./auth'));
 
+app.use('/api/whoami', require('./whoami'));
 
 // Route handler for field detail page
 app.get('/field/:id', (req, res) => {

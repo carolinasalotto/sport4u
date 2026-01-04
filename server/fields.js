@@ -1,6 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const pool = require('./db');
+const { authenticateUser } = require('./utils');
+const e = require('express');
 
 //get all fields
 router.get('/', async (req, res) => {
@@ -17,10 +20,16 @@ router.get('/:id', async (req, res) => {
     res.json(rows[0]);
 });
 
-//get available slots based on date (gg-mm-yyyy) and field
+//get available slots based on date (YYYY-MM-DD) and field
 
-router.get('/:id/:date', async (req, res) =>{
+router.get('/:id/slots', async (req, res) =>{
     try {
+        // Validate date query parameter
+        const { date } = req.query;
+        if (!date) {
+            return res.status(400).json({ error: 'Missing required query parameter: date' });
+        }
+        
         const [field_rows] = await pool.query(
             'SELECT open_from, open_till FROM fields WHERE fields.id = ?',
             [req.params.id]
@@ -35,9 +44,8 @@ router.get('/:id/:date', async (req, res) =>{
         const start_hour = Number(field_row.open_from.split(":")[0]);
         const end_hour = Number(field_row.open_till.split(":")[0]);
         
-        // Parse date from dd-mm-yyyy to yyyy-mm-dd for MySQL
-        const [day, month, year] = req.params.date.split('-');
-        const mysqlDate = `${year}-${month}-${day}`;
+        // Date is already in YYYY-MM-DD format (MySQL compatible)
+        const mysqlDate = date;
         
         const [day_bookings] = await pool.query(
             'SELECT booked_datetime, duration FROM bookings WHERE field_id = ? AND DATE(booked_datetime) = ?', 
@@ -156,6 +164,52 @@ router.post('/search-fields', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+// create booking
+router.post('/:id/bookings', authenticateUser, async (req, res) => {
+    try {
+        const user_id = req.userId;
+        const field_id = req.params.id;
+        const { date, start_hour, end_hour } = req.body;
+        
+        // Validate required parameters
+        if (!date || date === 'undefined' || !start_hour || start_hour === undefined || !end_hour || end_hour === undefined) {
+            return res.status(400).json({ error: 'Missing required parameters: date, start_hour, end_hour' });
+        }
+        
+        
+        // Validate hours are numbers
+        const startHourNum = parseInt(start_hour);
+        const endHourNum = parseInt(end_hour);
+        if (isNaN(startHourNum) || isNaN(endHourNum)) {
+            return res.status(400).json({ error: 'Invalid hour values. Must be numbers' });
+        }
+        
+        if (startHourNum < 0 || startHourNum > 23 || endHourNum < 0 || endHourNum > 23) {
+            return res.status(400).json({ error: 'Invalid hour values. Must be between 0 and 23' });
+        }
+        
+        if (endHourNum <= startHourNum) {
+            return res.status(400).json({ error: 'End hour must be greater than start hour' });
+        }
+        
+        // Create datetime string for the requested booking start time
+        const booked_datetime = `${date} ${String(startHourNum).padStart(2, '0')}:00:00`;
+        const duration = (endHourNum - startHourNum) * 60;
+
+        await pool.query('INSERT INTO bookings(booked_by, field_id, booked_datetime, duration) VALUES(?, ?, ?, ?)',
+            [user_id, field_id, booked_datetime, duration]);
+
+        res.status(201).json({ message: "Booking created successfully" });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
+
 
 module.exports = router;
 
