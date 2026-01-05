@@ -7,7 +7,6 @@ class AppHeader extends HTMLElement {
       <nav>
         <ul>
             <li><a href="/index.html">Home</a></li>
-            <li>Find tournaments</li>
             <li id="manage-tournaments-link">Manage tournaments</li>
             <li id="my-bookings-link">My bookings</li>
         </ul>

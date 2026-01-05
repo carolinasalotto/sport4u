@@ -457,5 +457,120 @@ router.get('/:id/matches', async (req, res) => {
     }
 });
 
+// Get standings for a tournament
+router.get('/:id/standings', async (req, res) => {
+    try {
+        const tournamentId = parseInt(req.params.id);
+        
+        if (isNaN(tournamentId)) {
+            return res.status(400).json({ error: 'Invalid tournament ID' });
+        }
+        
+        // Get tournament sport to determine point system
+        const [tournamentRows] = await pool.query(
+            'SELECT sport FROM tournaments WHERE id = ?',
+            [tournamentId]
+        );
+        
+        if (tournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found' });
+        }
+        
+        const sport = tournamentRows[0].sport.toLowerCase();
+        const isFootball = sport === 'football';
+        
+        // Get all teams in the tournament
+        const [teamsRows] = await pool.query(
+            `SELECT t.id, t.name 
+             FROM teams t 
+             JOIN tournamentteams tt ON t.id = tt.team_id 
+             WHERE tt.tournament_id = ? 
+             ORDER BY t.name`,
+            [tournamentId]
+        );
+        
+        // Get all completed matches (where both scores are not null)
+        const [matchesRows] = await pool.query(
+            `SELECT team1, team2, score_team1, score_team2 
+             FROM matches 
+             WHERE tournament_id = ? 
+             AND score_team1 IS NOT NULL 
+             AND score_team2 IS NOT NULL`,
+            [tournamentId]
+        );
+        
+        // Initialize standings for all teams
+        const standings = {};
+        teamsRows.forEach(team => {
+            standings[team.id] = {
+                teamId: team.id,
+                teamName: team.name,
+                points: 0,
+                matchesPlayed: 0,
+                scored: 0,
+                conceded: 0,
+                difference: 0
+            };
+        });
+
+        // example structure:
+        // standings = {
+        //     1: { teamId: 1, teamName: "Team A", points: 0, matchesPlayed: 0, ... },
+        //     2: { teamId: 2, teamName: "Team B", points: 0, matchesPlayed: 0, ... },
+        //     3: { teamId: 3, teamName: "Team C", points: 0, matchesPlayed: 0, ... }
+        //   }
+        
+        // Calculate standings from match results
+        matchesRows.forEach(match => {
+            const team1Id = match.team1;
+            const team2Id = match.team2;
+            const score1 = match.score_team1;
+            const score2 = match.score_team2;
+            
+            // Update scored and conceded
+            standings[team1Id].scored += score1;
+            standings[team1Id].conceded += score2;
+            standings[team2Id].scored += score2;
+            standings[team2Id].conceded += score1;
+            
+            // Update matches played
+            standings[team1Id].matchesPlayed++;
+            standings[team2Id].matchesPlayed++;
+            
+            // Calculate points based on result
+            if (score1 > score2) {
+                // Team 1 wins
+                standings[team1Id].points += isFootball ? 3 : 2;
+                standings[team2Id].points += 0;
+            } else if (score2 > score1) {
+                // Team 2 wins
+                standings[team1Id].points += 0;
+                standings[team2Id].points += isFootball ? 3 : 2;
+            } else {
+                // Draw (only for football)
+                standings[team1Id].points += isFootball ? 1 : 0;
+                standings[team2Id].points += isFootball ? 1 : 0;
+            }
+        });
+        
+        // Calculate goal/point difference
+        Object.values(standings).forEach(standing => {
+            standing.difference = standing.scored - standing.conceded;
+        });
+        
+        // Convert to array and sort by points (desc), then difference (desc), then scored (desc)
+        const standingsArray = Object.values(standings).sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            if (b.difference !== a.difference) return b.difference - a.difference;
+            return b.scored - a.scored;
+        });
+        
+        res.json(standingsArray);
+    } catch (error) {
+        console.error('Error fetching standings:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
 

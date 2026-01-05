@@ -575,3 +575,71 @@
     background-color: #138496;
 }
 
+/* Standings Section */
+.standings-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #ddd;
+}
+
+.standings-section h2 {
+    margin: 0 0 1.5rem 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.standings-table thead {
+    background-color: #28a745;
+    color: white;
+}
+
+.standings-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.standings-table th:first-child,
+.standings-table td:first-child {
+    text-align: center;
+    width: 60px;
+}
+
+.standings-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.standings-table tbody tr:first-child {
+    background-color: #d4edda;
+    font-weight: 600;
+}
+
+.standings-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.standings-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.standings-table td {
+    padding: 1rem;
+    color: #333;
+    font-size: 1rem;
+}
+
+.standings-table td:nth-child(3) {
+    font-weight: 600;
+    color: #28a745;
+}
+

@@ -118,6 +118,10 @@ function displayTournamentInfo(tournament, isCreator) {
             <button id="generate-matches-btn" class="generate-matches-btn">Generate Match Schedule</button>
         </div>
         ` : ''}
+        <div id="standings-section" class="standings-section" style="display: none;">
+            <h2>Standings</h2>
+            <div id="standings-container"></div>
+        </div>
         <div id="matches-section" class="matches-section" style="display: none;">
             <h2>Match Schedule</h2>
             <div id="matches-container"></div>
@@ -153,6 +157,9 @@ function displayTournamentInfo(tournament, isCreator) {
     
     // Load matches if they exist
     loadMatches();
+    
+    // Load standings
+    loadStandings();
 }
 
 // Show delete confirmation dialog
@@ -451,6 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Reload matches to show updated scores
                 await loadMatches();
+                
+                // Reload standings after result update
+                await loadStandings();
             } catch (error) {
                 console.error('Error updating match result:', error);
                 alert('Connection error. Please try again later.');
@@ -458,6 +468,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Load and display standings
+async function loadStandings() {
+    try {
+        const response = await fetch(`/api/tournaments/${tournamentId}/standings`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                document.getElementById('standings-section').style.display = 'none';
+                return;
+            }
+            throw new Error('Failed to fetch standings');
+        }
+        
+        const standings = await response.json();
+        
+        if (standings.length === 0) {
+            document.getElementById('standings-section').style.display = 'none';
+            return;
+        }
+        
+        displayStandings(standings);
+    } catch (error) {
+        console.error('Error loading standings:', error);
+        document.getElementById('standings-section').style.display = 'none';
+    }
+}
+
+// Display standings
+function displayStandings(standings) {
+    const standingsSection = document.getElementById('standings-section');
+    const standingsContainer = document.getElementById('standings-container');
+    
+    standingsSection.style.display = 'block';
+    
+    standingsContainer.innerHTML = `
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Team</th>
+                    <th>Points</th>
+                    <th>Matches</th>
+                    <th>Scored</th>
+                    <th>Conceded</th>
+                    <th>Difference</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${standings.map((team, index) => `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${team.teamName}</td>
+                        <td>${team.points}</td>
+                        <td>${team.matchesPlayed}</td>
+                        <td>${team.scored}</td>
+                        <td>${team.conceded}</td>
+                        <td>${team.difference >= 0 ? '+' : ''}${team.difference}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
 
 // Load tournament info on page load
 fetchTournamentInfo(tournamentId);
