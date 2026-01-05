@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .register-container {
     display: flex;
     justify-content: center;

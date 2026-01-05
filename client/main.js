@@ -39,6 +39,42 @@ async function fetchFields() {
 
 fetchFields();
 
+// Arrow navigation for fields row
+const fieldsRow = document.getElementById('fields-row');
+const scrollLeftBtn = document.getElementById('scroll-left');
+const scrollRightBtn = document.getElementById('scroll-right');
+
+function updateArrowVisibility() {
+    const isScrollable = fieldsRow.scrollWidth > fieldsRow.clientWidth; // Check if the fields row is scrollable (scrollWidht=total width of the fields row, clientWidth=width of the viewport)
+    scrollLeftBtn.style.display = isScrollable ? 'flex' : 'none';
+    scrollRightBtn.style.display = isScrollable ? 'flex' : 'none';
+    
+    // Update left arrow visibility
+    scrollLeftBtn.style.opacity = fieldsRow.scrollLeft > 0 ? '1' : '0';
+    scrollLeftBtn.style.pointerEvents = fieldsRow.scrollLeft > 0 ? 'auto' : 'none';
+    
+    // Update right arrow visibility
+    const isAtEnd = fieldsRow.scrollLeft + fieldsRow.clientWidth >= fieldsRow.scrollWidth - 1;
+    scrollRightBtn.style.opacity = isAtEnd ? '0' : '1';
+    scrollRightBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+}
+
+scrollLeftBtn.addEventListener('click', () => {
+    fieldsRow.scrollBy({ left: -300, behavior: 'smooth' });
+});
+
+scrollRightBtn.addEventListener('click', () => {
+    fieldsRow.scrollBy({ left: 300, behavior: 'smooth' });
+});
+
+fieldsRow.addEventListener('scroll', updateArrowVisibility);
+
+// Update on window resize and after fields load
+window.addEventListener('resize', updateArrowVisibility);
+setTimeout(updateArrowVisibility, 100); // Initial check after fields load
+
+
+
 document.getElementById('book-fields-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const params = new URLSearchParams();

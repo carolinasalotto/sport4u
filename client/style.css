@@ -7,7 +7,6 @@ html{
 }
 
 body{
-    width: 100vw;
     min-height: 100vh;
     padding: 0 2rem;
 }
@@ -143,12 +142,66 @@ body{
     
 }
 
+#fields-container {
+    position: relative;
+    width: 100%;
+}
+
 #fields-row{
+    padding: 1.5rem;
     display: flex;
     flex-direction: row;
     gap: 1.5rem;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
+#fields-row::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.scroll-arrow {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    color: black;
+    background-color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 3rem;
+    font-weight: 100;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scroll-arrow:hover {
+    width: 50px;
+    height: 50px;
+}
+
+.scroll-arrow:active {
+    font-size: 5rem;
+}
+
+.scroll-arrow-left {
+    left: 5px;
+}
+
+.scroll-arrow-right {
+    right: 5px;
+}
+
+
+  
 #fileds-title-container{
     width: 100%;
     display: flex;
