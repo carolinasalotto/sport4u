@@ -21,6 +21,7 @@ app.use('/api/bookings', require('./bookings'));
 
 app.use('/api/tournaments', require('./tournaments'));
 app.use('/api/matches', require('./matches'));
+app.use('/api/users', require('./users'));
 
 // Route handler for field detail page
 app.get('/field/:id', (req, res) => {
@@ -30,6 +31,11 @@ app.get('/field/:id', (req, res) => {
 // Route handler for tournament detail page
 app.get('/tournament/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/tournament.html'));
+});
+
+// Route handler for user detail page
+app.get('/user/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/user.html'));
 });
 
 

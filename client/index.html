@@ -13,7 +13,6 @@
         <ul class="tabs">
             <li><button class="tab-button active" id="book-fields">Book fields</button></li>
             <li><button class="tab-button" id="tournaments">Tournaments</button></li>
-            <li><button class="tab-button" id="teams">Teams</button></li>
             <li><button class="tab-button" id="users">Users</button></li>
         </ul>
         <div class="tab-container">
@@ -101,11 +100,16 @@
                     </div>
                 </form>
             </div>
-            <div id="teams-content" class="tab-content">
-                <input placeholder="Search for a team">
-            </div>
+            
             <div id="users-content" class="tab-content">
-                <input placeholder="Search for a user">
+                <form class="search-form" id="users-search-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="users-name">Search User</label>
+                            <input type="text" id="users-name" name="name" placeholder="Search by username, name, surname, or email">
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -128,6 +132,12 @@
             <h2>Tournaments</h2>
         </div>
         <div id="tournaments-container"></div>
+    </div>
+    <div id="users-section" class="users-section">
+        <div id="users-title-container">
+            <h2>Users</h2>
+        </div>
+        <div id="users-container"></div>
     </div>
     <script src="./auth.js"></script>
     <script src="./components/header.js"></script>

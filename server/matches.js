@@ -33,7 +33,7 @@ router.put('/:id/result', authenticateUser, async (req, res) => {
         
         // Get match and check if user is the tournament creator
         const [matchRows] = await pool.query(
-            `SELECT m.id, m.tournament_id, t.created_by 
+            `SELECT m.id, m.tournament_id, m.datetime, t.created_by 
              FROM matches m 
              JOIN tournaments t ON m.tournament_id = t.id 
              WHERE m.id = ?`,
@@ -48,6 +48,15 @@ router.put('/:id/result', authenticateUser, async (req, res) => {
         
         if (match.created_by !== userId) {
             return res.status(403).json({ error: 'Only the tournament creator can update match results' });
+        }
+        
+        // Check if match datetime has passed
+        if (match.datetime) {
+            const matchDateTime = new Date(match.datetime);
+            const now = new Date();
+            if (matchDateTime > now) {
+                return res.status(400).json({ error: 'Cannot enter results before the match datetime' });
+            }
         }
         
         // Update match scores

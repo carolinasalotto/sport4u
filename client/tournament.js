@@ -321,6 +321,7 @@ function displayMatches(matches, isCreator) {
                     const score1 = match.score_team1 !== null ? match.score_team1 : '-';
                     const score2 = match.score_team2 !== null ? match.score_team2 : '-';
                     let datetimeStr = '-';
+                    let canEditResult = false;
                     if (match.datetime) {
                         const matchDate = new Date(match.datetime);
                         datetimeStr = matchDate.toLocaleString('en-US', {
@@ -329,6 +330,9 @@ function displayMatches(matches, isCreator) {
                             hour: '2-digit',
                             minute: '2-digit'
                         });
+                        // Check if match datetime has passed
+                        const now = new Date();
+                        canEditResult = matchDate <= now;
                     }
                     return `
                     <tr>
@@ -338,13 +342,18 @@ function displayMatches(matches, isCreator) {
                         <td class="score-cell">${score1} - ${score2}</td>
                         ${isCreator ? `
                         <td>
+                            ${canEditResult ? `
                             <button class="edit-result-btn" data-match-id="${match.id}" 
                                     data-team1-name="${match.team1.name}" 
                                     data-team2-name="${match.team2.name}"
                                     data-score1="${match.score_team1 !== null ? match.score_team1 : ''}"
-                                    data-score2="${match.score_team2 !== null ? match.score_team2 : ''}">
+                                    data-score2="${match.score_team2 !== null ? match.score_team2 : ''}"
+                                    data-datetime="${match.datetime || ''}">
                                 Edit Result
                             </button>
+                            ` : `
+                            <span class="match-not-started">Match not started</span>
+                            `}
                         </td>
                         ` : ''}
                     </tr>
@@ -363,14 +372,25 @@ function displayMatches(matches, isCreator) {
                 const team2Name = btn.getAttribute('data-team2-name');
                 const score1 = btn.getAttribute('data-score1');
                 const score2 = btn.getAttribute('data-score2');
-                openEditResultDialog(matchId, team1Name, team2Name, score1, score2);
+                const matchDateTime = btn.getAttribute('data-datetime');
+                openEditResultDialog(matchId, team1Name, team2Name, score1, score2, matchDateTime);
             });
         });
     }
 }
 
 // Open edit result dialog
-function openEditResultDialog(matchId, team1Name, team2Name, score1, score2) {
+function openEditResultDialog(matchId, team1Name, team2Name, score1, score2, matchDateTime) {
+    // Double-check that match datetime has passed
+    if (matchDateTime) {
+        const matchDate = new Date(matchDateTime);
+        const now = new Date();
+        if (matchDate > now) {
+            alert('Cannot enter results before the match datetime');
+            return;
+        }
+    }
+    
     const dialog = document.getElementById('edit-result-dialog');
     const form = document.getElementById('edit-result-form');
     const team1Label = document.getElementById('result-team1-label');

@@ -4,10 +4,10 @@ const router = express.Router();
 const pool = require('./db');
 const { authenticateUser } = require('./utils');
 
-// Get all tournaments with optional filters (q for title, sport for sport)
+// Get all tournaments with optional filters (q for title, sport for sport, created_by for user)
 router.get('/', async (req, res) => {
     try {
-        const { q, sport } = req.query;
+        const { q, sport, created_by } = req.query;
         
         let query = 'SELECT id, name, sport, max_teams, start_date, description FROM tournaments WHERE 1=1';
         const params = [];
@@ -22,6 +22,15 @@ router.get('/', async (req, res) => {
         if (sport && sport.trim() !== '') {
             query += ' AND sport = ?';
             params.push(sport);
+        }
+        
+        // Filter by creator
+        if (created_by && created_by.trim() !== '') {
+            const createdById = parseInt(created_by);
+            if (!isNaN(createdById)) {
+                query += ' AND created_by = ?';
+                params.push(createdById);
+            }
         }
         
         query += ' ORDER BY start_date DESC';

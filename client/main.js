@@ -3,6 +3,7 @@ const tabButtons = document.querySelectorAll('.tab-button');
 const tabContents = document.querySelectorAll('.tab-content');
 const bookFieldsSection = document.getElementById('book-fields-section');
 const tournamentsSection = document.getElementById('tournaments-section');
+const usersSection = document.getElementById('users-section');
 
 tabButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -16,16 +17,23 @@ tabButtons.forEach(button => {
         button.classList.add('active');
         document.getElementById(targetTab + '-content').classList.add('active');
         
-        // Show/hide book fields section
+        // Show/hide sections
         if (targetTab === 'book-fields') {
             bookFieldsSection.classList.add('active');
             tournamentsSection.classList.remove('active');
+            usersSection.classList.remove('active');
         } else if (targetTab === 'tournaments') {
             bookFieldsSection.classList.remove('active');
             tournamentsSection.classList.add('active');
+            usersSection.classList.remove('active');
+        } else if (targetTab === 'users') {
+            bookFieldsSection.classList.remove('active');
+            tournamentsSection.classList.remove('active');
+            usersSection.classList.add('active');
         } else {
             bookFieldsSection.classList.remove('active');
             tournamentsSection.classList.remove('active');
+            usersSection.classList.remove('active');
         }
     });
 });
@@ -227,3 +235,99 @@ function debounceTournamentsSearch() {
 
 tournamentsNameInput.addEventListener('input', debounceTournamentsSearch);
 tournamentsSportSelect.addEventListener('change', fetchTournaments);
+
+// Fetch users
+async function fetchUsers() {
+    const usersName = document.getElementById('users-name').value;
+    
+    const params = new URLSearchParams();
+    if (usersName && usersName.trim() !== '') {
+        params.set('q', usersName.trim());
+    }
+    
+    const container = document.getElementById('users-container');
+    container.classList.add('loading');
+    container.innerHTML = '<p>Loading users...</p>';
+    
+    try {
+        const response = await fetch(`/api/users?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch users');
+        }
+        
+        const users = await response.json();
+        displayUsers(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        container.innerHTML = '<p class="error">Error loading users. Please try again later.</p>';
+    } finally {
+        container.classList.remove('loading');
+    }
+}
+
+// Display users in the UI
+function displayUsers(users) {
+    const container = document.getElementById('users-container');
+    
+    if (users.length === 0) {
+        container.classList.add('empty');
+        container.innerHTML = '<p>No users found.</p>';
+        return;
+    }
+    
+    container.classList.remove('empty');
+    let usersHTML = '';
+    users.forEach(user => {
+        usersHTML += `
+            <div class="user-card">
+                <div class="user-header">
+                    <h3>${user.username}</h3>
+                </div>
+                <div class="user-details">
+                    <p class="user-name"><strong>Name:</strong> ${user.name} ${user.surname}</p>
+                    <p class="user-email"><strong>Email:</strong> ${user.email}</p>
+                    <div class="user-actions">
+                        <a href="/user/${user.id}" class="details-user-btn">Details</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = `
+        <div class="users-grid">
+            ${usersHTML}
+        </div>
+    `;
+    
+    // Make user cards clickable
+    document.querySelectorAll('.user-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            // Don't navigate if clicking on links or buttons (let them handle it)
+            if (e.target.closest('a') || e.target.closest('button')) {
+                return;
+            }
+            const detailsBtn = card.querySelector('.details-user-btn');
+            if (detailsBtn) {
+                window.location.href = detailsBtn.href;
+            }
+        });
+    });
+}
+
+// Fetch users on page load
+fetchUsers();
+
+// Listen to form changes in users tab
+const usersNameInput = document.getElementById('users-name');
+
+let usersSearchTimeout;
+function debounceUsersSearch() {
+    clearTimeout(usersSearchTimeout);
+    usersSearchTimeout = setTimeout(() => {
+        fetchUsers();
+    }, 300);
+}
+
+usersNameInput.addEventListener('input', debounceUsersSearch);
