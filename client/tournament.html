@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/tournament.css">
+        <link rel="stylesheet" type="text/css" href="/components/header.css">
+    </head>
+    <body>
+        <app-header></app-header>
+        <button id="back-button">Back</button>
+        <div id="tournament-container">
+            <div id="tournament-info">
+            </div>
+        </div>
+
+        <div id="create-team-dialog" class="dialog-overlay">
+            <div class="dialog-content">
+                <form id="create-team-form">
+                    <h2>Create Team</h2>
+                    <div class="form-group">
+                        <label for="team-name">Team Name</label>
+                        <input type="text" id="team-name" name="teamName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Players</label>
+                        <div id="players-container">
+                            <!-- Player rows will be added here -->
+                        </div>
+                        <button type="button" id="add-player-btn" class="add-player-btn">Add Player</button>
+                    </div>
+                    <div class="dialog-buttons">
+                        <button type="button" id="cancel-team-btn">Cancel</button>
+                        <button type="submit" id="submit-team-btn">Create Team</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    
+        <script src="/auth.js"></script>
+        <script src="/components/header.js"></script>
+        <script src="/tournament.js"></script>
+        
+    </body>
+</html>
+

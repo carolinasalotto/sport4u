@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
     if( parsedLimit ){
         limit_condition = " LIMIT ?";
     }
-    console.log(limit_condition);
     
 
     if(!q || q == ""){

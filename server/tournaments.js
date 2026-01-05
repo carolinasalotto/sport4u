@@ -21,6 +21,144 @@ router.get('/mine', authenticateUser, async (req, res) => {
     }
 });
 
+// Get single tournament by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const tournamentId = parseInt(req.params.id);
+        
+        if (isNaN(tournamentId)) {
+            return res.status(400).json({ error: 'Invalid tournament ID' });
+        }
+        
+        // Get tournament info
+        const [rows] = await pool.query(
+            'SELECT t.*, u.username as created_by_username, u.name as created_by_name, u.surname as created_by_surname FROM tournaments t JOIN users u ON t.created_by = u.id WHERE t.id = ?',
+            [tournamentId]
+        );
+        
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found' });
+        }
+        
+        const tournament = rows[0];
+        
+        // Get teams for this tournament
+        const [teamsRows] = await pool.query(
+            'SELECT t.id, t.name FROM teams t JOIN tournamentteams tt ON t.id = tt.team_id WHERE tt.tournament_id = ? ORDER BY t.name',
+            [tournamentId]
+        );
+        
+        // Get players for each team
+        const teams = await Promise.all(teamsRows.map(async (team) => {
+            const [playersRows] = await pool.query(
+                'SELECT id, name, surname, jersey_number FROM teamplayers WHERE team_id = ? ORDER BY jersey_number',
+                [team.id]
+            );
+            
+            return {
+                id: team.id,
+                name: team.name,
+                players: playersRows.map(player => ({
+                    id: player.id,
+                    name: player.name,
+                    surname: player.surname,
+                    jerseyNumber: player.jersey_number
+                }))
+            };
+        }));
+        
+        tournament.teams = teams;
+        
+        res.json(tournament);
+    } catch (error) {
+        console.error('Error fetching tournament:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Add team to tournament
+router.put('/:id/team', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const tournamentId = parseInt(req.params.id);
+        const { teamName, players } = req.body;
+        
+        // Validate required fields
+        if (!teamName || !players || !Array.isArray(players) || players.length === 0) {
+            return res.status(400).json({ error: 'Missing required fields: teamName and players array' });
+        }
+        
+        // Validate tournament exists and user is the creator
+        const [tournamentRows] = await pool.query(
+            'SELECT id, max_teams, created_by FROM tournaments WHERE id = ?',
+            [tournamentId]
+        );
+        
+        if (tournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found' });
+        }
+        
+        const tournament = tournamentRows[0];
+        
+        if (tournament.created_by !== userId) {
+            return res.status(403).json({ error: 'Only the tournament creator can add teams' });
+        }
+        
+        // Check current number of teams in tournament
+        const [teamCountRows] = await pool.query(
+            'SELECT COUNT(*) as count FROM tournamentteams WHERE tournament_id = ?',
+            [tournamentId]
+        );
+        
+        const currentTeamCount = teamCountRows[0].count;
+        
+        if (currentTeamCount >= tournament.max_teams) {
+            return res.status(400).json({ error: `Tournament has reached maximum number of teams (${tournament.max_teams})` });
+        }
+        
+        
+        try {
+            // Insert team
+            const [teamResult] = await pool.query(
+                'INSERT INTO teams (name) VALUES (?)',
+                [teamName]
+            );
+            const teamId = teamResult.insertId;
+            
+            // Insert players
+            for (const player of players) {
+                await pool.query(
+                    'INSERT INTO teamplayers (team_id, name, surname, jersey_number) VALUES (?, ?, ?, ?)',
+                    [teamId, player.name, player.surname, player.jerseyNumber]
+                );
+            }
+            
+            // Link team to tournament
+            await pool.query(
+                'INSERT INTO tournamentteams (tournament_id, team_id) VALUES (?, ?)',
+                [tournamentId, teamId]
+            );
+            
+            
+            res.json({
+                msg: 'Team added to tournament successfully'
+            });
+        } catch (error) {
+            throw error;
+        }
+    } catch (error) {
+        console.error('Error adding team to tournament:', error);
+        
+        
+        // Handle duplicate jersey number error
+        if (error.code === 'ER_DUP_ENTRY' && error.message.includes('team_id_2')) {
+            return res.status(400).json({ error: 'Jersey number already exists for this team' });
+        }
+        
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Create tournament
 router.post('/', authenticateUser, async (req, res) => {
     try {
@@ -100,6 +238,58 @@ router.put('/:id', authenticateUser, async (req, res) => {
         });
     } catch (error) {
         console.error('Error updating tournament:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Delete team from tournament
+router.delete('/:id/team/:teamId', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const tournamentId = parseInt(req.params.id);
+        const teamId = parseInt(req.params.teamId);
+        
+        if (isNaN(tournamentId) || isNaN(teamId)) {
+            return res.status(400).json({ error: 'Invalid tournament ID or team ID' });
+        }
+        
+        // Validate tournament exists and user is the creator
+        const [tournamentRows] = await pool.query(
+            'SELECT id, created_by FROM tournaments WHERE id = ?',
+            [tournamentId]
+        );
+        
+        if (tournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found' });
+        }
+        
+        const tournament = tournamentRows[0];
+        
+        if (tournament.created_by !== userId) {
+            return res.status(403).json({ error: 'Only the tournament creator can delete teams' });
+        }
+        
+        // Check if team is in this tournament
+        const [teamTournamentRows] = await pool.query(
+            'SELECT * FROM tournamentteams WHERE tournament_id = ? AND team_id = ?',
+            [tournamentId, teamId]
+        );
+        
+        if (teamTournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Team not found in this tournament' });
+        }
+        
+        // Remove team from tournament
+        await pool.query(
+            'DELETE FROM tournamentteams WHERE tournament_id = ? AND team_id = ?',
+            [tournamentId, teamId]
+        );
+        
+        res.json({
+            message: 'Team removed from tournament successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting team from tournament:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

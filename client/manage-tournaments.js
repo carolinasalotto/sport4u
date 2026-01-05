@@ -281,13 +281,16 @@ function displayTournaments(tournaments) {
                     <p class="tournament-date"><strong>Start Date:</strong> ${dateStr}</p>
                     <p class="tournament-teams"><strong>Max Teams:</strong> ${tournament.max_teams}</p>
                     ${tournament.description ? `<p class="tournament-description"><strong>Description:</strong> ${tournament.description}</p>` : ''}
-                    <button class="edit-tournament-btn"
-                            data-tournament-id="${tournament.id}" 
-                            data-tournament-name="${tournament.name}" 
-                            data-tournament-sport="${tournament.sport}" 
-                            data-tournament-max-teams="${tournament.max_teams}" 
-                            data-tournament-start-date="${dateInputValue}" 
-                            data-tournament-description="${tournament.description || ''}">Edit</button>
+                    <div class="tournament-actions">
+                        <a href="/tournament/${tournament.id}" class="details-tournament-btn">Details</a>
+                        <button class="edit-tournament-btn"
+                                data-tournament-id="${tournament.id}" 
+                                data-tournament-name="${tournament.name}" 
+                                data-tournament-sport="${tournament.sport}" 
+                                data-tournament-max-teams="${tournament.max_teams}" 
+                                data-tournament-start-date="${dateInputValue}" 
+                                data-tournament-description="${tournament.description || ''}">Edit</button>
+                    </div>
                 </div>
             </div>
         `;
