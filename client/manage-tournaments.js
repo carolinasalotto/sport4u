@@ -325,7 +325,8 @@ function displayTournaments(tournaments) {
     
     // Add event listeners to edit buttons
     document.querySelectorAll('.edit-tournament-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent card click from firing
             const tournamentData = {
                 id: btn.getAttribute('data-tournament-id'),
                 name: btn.getAttribute('data-tournament-name'),
@@ -335,6 +336,24 @@ function displayTournaments(tournaments) {
                 description: btn.getAttribute('data-tournament-description')
             };
             openEditTournamentForm(tournamentData);
+        });
+    });
+    
+    // Make tournament cards clickable (navigate to details)
+    document.querySelectorAll('.tournament-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            // Don't navigate if clicking on buttons, links, or their children
+            if (e.target.classList.contains('edit-tournament-btn') || 
+                e.target.classList.contains('details-tournament-btn') ||
+                e.target.closest('button') ||
+                e.target.closest('a')) {
+                return;
+            }
+            const detailsBtn = card.querySelector('.details-tournament-btn');
+            if (detailsBtn) {
+                window.location.href = detailsBtn.href;
+            }
         });
     });
 }

@@ -142,6 +142,7 @@
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
     border: 1px solid #00000010;
     transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
 }
 
 .tournament-card:hover {

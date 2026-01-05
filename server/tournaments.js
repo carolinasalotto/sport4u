@@ -4,6 +4,37 @@ const router = express.Router();
 const pool = require('./db');
 const { authenticateUser } = require('./utils');
 
+// Get all tournaments with optional filters (q for title, sport for sport)
+router.get('/', async (req, res) => {
+    try {
+        const { q, sport } = req.query;
+        
+        let query = 'SELECT id, name, sport, max_teams, start_date, description FROM tournaments WHERE 1=1';
+        const params = [];
+        
+        // Filter by title (q) - partial case-insensitive match
+        if (q && q.trim() !== '') {
+            query += ' AND LOWER(name) LIKE ?';
+            params.push(`%${q.toLowerCase()}%`);
+        }
+        
+        // Filter by sport
+        if (sport && sport.trim() !== '') {
+            query += ' AND sport = ?';
+            params.push(sport);
+        }
+        
+        query += ' ORDER BY start_date DESC';
+        
+        const [rows] = await pool.query(query, params);
+        
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching tournaments:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Get all tournaments created by the authenticated user
 router.get('/mine', authenticateUser, async (req, res) => {
     try {
