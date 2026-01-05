@@ -7,6 +7,9 @@ backButton.addEventListener('click', () => {
 const pathParts = window.location.pathname.split('/');
 const tournamentId = pathParts[pathParts.length - 1];
 
+// Store if current user is creator
+let isTournamentCreator = false;
+
 // Fetch tournament info
 async function fetchTournamentInfo(id) {
     try {
@@ -25,6 +28,7 @@ async function fetchTournamentInfo(id) {
         // Check if user is logged in and is the creator
         const authStatus = await checkLogin();
         const isCreator = authStatus.isLoggedIn && authStatus.user && authStatus.user.id === tournament.created_by;
+        isTournamentCreator = isCreator;
         
         displayTournamentInfo(tournament, isCreator);
     } catch (error) {
@@ -42,6 +46,10 @@ function displayTournamentInfo(tournament, isCreator) {
         month: 'long', 
         day: 'numeric' 
     });
+    const timeStr = startDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
     
     const createdByName = tournament.created_by_name && tournament.created_by_surname 
         ? `${tournament.created_by_name} ${tournament.created_by_surname}`
@@ -55,7 +63,7 @@ function displayTournamentInfo(tournament, isCreator) {
         <div class="tournament-details-section">
             <div class="detail-item">
                 <strong>Start Date:</strong>
-                <span>${dateStr}</span>
+                <span>${dateStr} at ${timeStr}</span>
             </div>
             <div class="detail-item">
                 <strong>Maximum Teams:</strong>
@@ -107,8 +115,13 @@ function displayTournamentInfo(tournament, isCreator) {
         ${isCreator ? `
         <div class="tournament-actions-section">
             <button id="create-team-btn" class="create-team-btn">Create Team</button>
+            <button id="generate-matches-btn" class="generate-matches-btn">Generate Match Schedule</button>
         </div>
         ` : ''}
+        <div id="matches-section" class="matches-section" style="display: none;">
+            <h2>Match Schedule</h2>
+            <div id="matches-container"></div>
+        </div>
     `;
     
     // Attach event listener to the create team button if it exists
@@ -129,6 +142,17 @@ function displayTournamentInfo(tournament, isCreator) {
             deleteTeam(teamId, teamName);
         });
     });
+    
+    // Attach event listener to generate matches button if it exists
+    const generateMatchesBtn = document.getElementById('generate-matches-btn');
+    if (generateMatchesBtn) {
+        generateMatchesBtn.addEventListener('click', () => {
+            generateMatchSchedule();
+        });
+    }
+    
+    // Load matches if they exist
+    loadMatches();
 }
 
 // Show delete confirmation dialog
@@ -213,6 +237,227 @@ async function performDeleteTeam(teamId) {
         alert('Connection error. Please try again later.');
     }
 }
+
+// Generate match schedule
+async function generateMatchSchedule() {
+    try {
+        const response = await fetch(`/api/tournaments/${tournamentId}/matches/generate`, {
+            method: 'POST',
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.error || 'Failed to generate match schedule');
+            return;
+        }
+        
+       
+        
+        // Reload matches to display them
+        await loadMatches();
+    } catch (error) {
+        console.error('Error generating match schedule:', error);
+        alert('Connection error. Please try again later.');
+    }
+}
+
+// Load and display matches
+async function loadMatches() {
+    try {
+        const response = await fetch(`/api/tournaments/${tournamentId}/matches`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                // No matches found, hide matches section
+                document.getElementById('matches-section').style.display = 'none';
+                return;
+            }
+            throw new Error('Failed to fetch matches');
+        }
+        
+        const matches = await response.json();
+        
+        if (matches.length === 0) {
+            document.getElementById('matches-section').style.display = 'none';
+            return;
+        }
+        
+        displayMatches(matches, isTournamentCreator);
+    } catch (error) {
+        console.error('Error loading matches:', error);
+        // Don't show error to user, just hide matches section
+        document.getElementById('matches-section').style.display = 'none';
+    }
+}
+
+// Display matches
+function displayMatches(matches, isCreator) {
+    const matchesSection = document.getElementById('matches-section');
+    const matchesContainer = document.getElementById('matches-container');
+    
+    matchesSection.style.display = 'block';
+    
+    matchesContainer.innerHTML = `
+        <table class="matches-table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Team 1</th>
+                    <th>Team 2</th>
+                    <th>Score</th>
+                    ${isCreator ? '<th></th>' : ''}
+                </tr>
+            </thead>
+            <tbody>
+                ${matches.map(match => {
+                    const score1 = match.score_team1 !== null ? match.score_team1 : '-';
+                    const score2 = match.score_team2 !== null ? match.score_team2 : '-';
+                    let datetimeStr = '-';
+                    if (match.datetime) {
+                        const matchDate = new Date(match.datetime);
+                        datetimeStr = matchDate.toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
+                    return `
+                    <tr>
+                        <td>${datetimeStr}</td>
+                        <td>${match.team1.name}</td>
+                        <td>${match.team2.name}</td>
+                        <td class="score-cell">${score1} - ${score2}</td>
+                        ${isCreator ? `
+                        <td>
+                            <button class="edit-result-btn" data-match-id="${match.id}" 
+                                    data-team1-name="${match.team1.name}" 
+                                    data-team2-name="${match.team2.name}"
+                                    data-score1="${match.score_team1 !== null ? match.score_team1 : ''}"
+                                    data-score2="${match.score_team2 !== null ? match.score_team2 : ''}">
+                                Edit Result
+                            </button>
+                        </td>
+                        ` : ''}
+                    </tr>
+                `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
+    
+    // Attach event listeners to edit result buttons
+    if (isCreator) {
+        document.querySelectorAll('.edit-result-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const matchId = parseInt(btn.getAttribute('data-match-id'));
+                const team1Name = btn.getAttribute('data-team1-name');
+                const team2Name = btn.getAttribute('data-team2-name');
+                const score1 = btn.getAttribute('data-score1');
+                const score2 = btn.getAttribute('data-score2');
+                openEditResultDialog(matchId, team1Name, team2Name, score1, score2);
+            });
+        });
+    }
+}
+
+// Open edit result dialog
+function openEditResultDialog(matchId, team1Name, team2Name, score1, score2) {
+    const dialog = document.getElementById('edit-result-dialog');
+    const form = document.getElementById('edit-result-form');
+    const team1Label = document.getElementById('result-team1-label');
+    const team2Label = document.getElementById('result-team2-label');
+    const score1Input = document.getElementById('result-score1');
+    const score2Input = document.getElementById('result-score2');
+    
+    team1Label.textContent = `${team1Name} Score:`;
+    team2Label.textContent = `${team2Name} Score:`;
+    score1Input.value = score1 || '';
+    score2Input.value = score2 || '';
+    
+    // Store match ID in form dataset
+    form.dataset.matchId = matchId;
+    
+    dialog.classList.add('active');
+}
+
+// Close edit result dialog
+function closeEditResultDialog() {
+    const dialog = document.getElementById('edit-result-dialog');
+    const form = document.getElementById('edit-result-form');
+    dialog.classList.remove('active');
+    form.reset();
+    delete form.dataset.matchId;
+}
+
+// Initialize edit result dialog
+document.addEventListener('DOMContentLoaded', () => {
+    const editResultDialog = document.getElementById('edit-result-dialog');
+    const editResultForm = document.getElementById('edit-result-form');
+    const cancelResultBtn = document.getElementById('cancel-result-btn');
+    
+    // Close dialog on cancel
+    if (cancelResultBtn) {
+        cancelResultBtn.addEventListener('click', () => {
+            closeEditResultDialog();
+        });
+    }
+    
+    // Close dialog when clicking outside
+    if (editResultDialog) {
+        editResultDialog.addEventListener('click', (e) => {
+            if (e.target === editResultDialog) {
+                closeEditResultDialog();
+            }
+        });
+    }
+    
+    // Form submission
+    if (editResultForm) {
+        editResultForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const matchId = parseInt(editResultForm.dataset.matchId);
+            const score1 = document.getElementById('result-score1').value;
+            const score2 = document.getElementById('result-score2').value;
+            
+            if (!matchId) {
+                alert('Error: Match ID not found');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/matches/${matchId}/result`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        score_team1: score1 === '' ? null : parseInt(score1),
+                        score_team2: score2 === '' ? null : parseInt(score2)
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to update match result');
+                    return;
+                }
+                
+                // Close dialog
+                closeEditResultDialog();
+                
+                // Reload matches to show updated scores
+                await loadMatches();
+            } catch (error) {
+                console.error('Error updating match result:', error);
+                alert('Connection error. Please try again later.');
+            }
+        });
+    }
+});
 
 // Load tournament info on page load
 fetchTournamentInfo(tournamentId);

@@ -42,7 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const sport = document.getElementById('tournament-sport').value;
         const maxTeams = document.getElementById('tournament-max-teams').value;
         const startDate = document.getElementById('tournament-start-date').value;
+        const startTime = document.getElementById('tournament-start-time').value;
         const description = document.getElementById('tournament-description').value;
+        
+        // Combine date and time into datetime string (YYYY-MM-DD HH:MM:SS)
+        const startDateTime = startDate && startTime ? `${startDate} ${startTime}:00` : startDate;
         
         const url = editingTournamentId 
             ? `/api/tournaments/${editingTournamentId}`
@@ -60,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     name,
                     sport,
                     maxTeams,
-                    startDate,
+                    startDate: startDateTime,
                     description: description || null
                 })
             });
@@ -237,7 +241,20 @@ function openEditTournamentForm(tournamentData) {
     document.getElementById('tournament-name').value = tournamentData.name;
     document.getElementById('tournament-sport').value = tournamentData.sport;
     document.getElementById('tournament-max-teams').value = tournamentData.maxTeams;
-    document.getElementById('tournament-start-date').value = tournamentData.startDate;
+    
+    // Split datetime into date and time
+    if (tournamentData.startDate) {
+        // Handle both ISO format (YYYY-MM-DDTHH:MM:SS) and MySQL format (YYYY-MM-DD HH:MM:SS)
+        const datetimeStr = tournamentData.startDate.replace(' ', 'T');
+        const datetime = new Date(datetimeStr);
+        const dateStr = datetime.toISOString().split('T')[0];
+        const hours = String(datetime.getHours()).padStart(2, '0');
+        const minutes = String(datetime.getMinutes()).padStart(2, '0');
+        const timeStr = `${hours}:${minutes}`;
+        document.getElementById('tournament-start-date').value = dateStr;
+        document.getElementById('tournament-start-time').value = timeStr;
+    }
+    
     document.getElementById('tournament-description').value = tournamentData.description || '';
     
     // Update button text
@@ -267,6 +284,10 @@ function displayTournaments(tournaments) {
             month: 'long', 
             day: 'numeric' 
         });
+        const timeStr = startDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
         
         // Format date for input field (YYYY-MM-DD)
         const dateInputValue = tournament.start_date.split('T')[0];
@@ -278,7 +299,7 @@ function displayTournaments(tournaments) {
                     <span class="sport-badge">${tournament.sport}</span>
                 </div>
                 <div class="tournament-details">
-                    <p class="tournament-date"><strong>Start Date:</strong> ${dateStr}</p>
+                    <p class="tournament-date"><strong>Start Date:</strong> ${dateStr} at ${timeStr}</p>
                     <p class="tournament-teams"><strong>Max Teams:</strong> ${tournament.max_teams}</p>
                     ${tournament.description ? `<p class="tournament-description"><strong>Description:</strong> ${tournament.description}</p>` : ''}
                     <div class="tournament-actions">
@@ -288,7 +309,7 @@ function displayTournaments(tournaments) {
                                 data-tournament-name="${tournament.name}" 
                                 data-tournament-sport="${tournament.sport}" 
                                 data-tournament-max-teams="${tournament.max_teams}" 
-                                data-tournament-start-date="${dateInputValue}" 
+                                data-tournament-start-date="${tournament.start_date}" 
                                 data-tournament-description="${tournament.description || ''}">Edit</button>
                     </div>
                 </div>

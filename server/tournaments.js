@@ -326,5 +326,136 @@ router.delete('/:id', authenticateUser, async (req, res) => {
     }
 });
 
+// Generate match schedule (single round robin)
+router.post('/:id/matches/generate', authenticateUser, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const tournamentId = parseInt(req.params.id);
+        
+        if (isNaN(tournamentId)) {
+            return res.status(400).json({ error: 'Invalid tournament ID' });
+        }
+        
+        
+        // Check if tournament exists and user is the creator
+        const [tournamentRows] = await pool.query(
+            'SELECT id, created_by, start_date FROM tournaments WHERE id = ?',
+            [tournamentId]
+        );
+        
+        if (tournamentRows.length === 0) {
+            return res.status(404).json({ error: 'Tournament not found' });
+        }
+        
+        if (tournamentRows[0].created_by !== userId) {
+            return res.status(403).json({ error: 'Only the tournament creator can generate matches' });
+        }
+        
+        const tournament = tournamentRows[0];
+        const startDate = new Date(tournament.start_date);
+        
+        // Get all teams in the tournament
+        const [teamsRows] = await pool.query(
+            'SELECT team_id FROM tournamentteams WHERE tournament_id = ?',
+            [tournamentId]
+        );
+        
+        const teamIds = teamsRows.map(row => row.team_id);
+        
+        if (teamIds.length < 2) {
+            return res.status(400).json({ error: 'At least 2 teams are required to generate matches' });
+        }
+        
+        // Delete all existing matches for this tournament
+        await pool.query(
+            'DELETE FROM matches WHERE tournament_id = ?',
+            [tournamentId]
+        );
+        
+        // Generate single round robin matches
+        const matches = [];
+        for (let i = 0; i < teamIds.length; i++) {
+            for (let j = i + 1; j < teamIds.length; j++) {
+                matches.push({
+                    tournament_id: tournamentId,
+                    team1: teamIds[i],
+                    team2: teamIds[j]
+                });
+            }
+        }
+        
+        // Insert matches into database with progressive datetime
+        for (let i = 0; i < matches.length; i++) {
+            const matchDateTime = new Date(startDate);
+            matchDateTime.setHours(matchDateTime.getHours() + i);
+            
+            await pool.query(
+                'INSERT INTO matches (tournament_id, team1, team2, score_team1, score_team2, datetime) VALUES (?, ?, ?, NULL, NULL, ?)',
+                [matches[i].tournament_id, matches[i].team1, matches[i].team2, matchDateTime]
+            );
+        }
+        
+        res.json({
+            message: 'Match schedule generated successfully',
+            matchesGenerated: matches.length
+        });
+    } catch (error) {
+        console.error('Error generating match schedule:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// List matches for a tournament
+router.get('/:id/matches', async (req, res) => {
+    try {
+        const tournamentId = parseInt(req.params.id);
+        
+        if (isNaN(tournamentId)) {
+            return res.status(400).json({ error: 'Invalid tournament ID' });
+        }
+        
+        // Get all matches with team names
+        const [matchesRows] = await pool.query(
+            `SELECT 
+                m.id,
+                m.tournament_id,
+                m.team1,
+                m.team2,
+                m.score_team1,
+                m.score_team2,
+                m.datetime,
+                t1.name as team1_name,
+                t2.name as team2_name
+            FROM matches m
+            JOIN teams t1 ON m.team1 = t1.id
+            JOIN teams t2 ON m.team2 = t2.id
+            WHERE m.tournament_id = ?
+            ORDER BY m.datetime`,
+            [tournamentId]
+        );
+        
+        const matches = matchesRows.map(match => ({
+            id: match.id,
+            tournament_id: match.tournament_id,
+            team1: {
+                id: match.team1,
+                name: match.team1_name
+            },
+            team2: {
+                id: match.team2,
+                name: match.team2_name
+            },
+            score_team1: match.score_team1,
+            score_team2: match.score_team2,
+            datetime: match.datetime
+        }));
+        
+        res.json(matches);
+    } catch (error) {
+        console.error('Error fetching matches:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
 
