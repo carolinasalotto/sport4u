@@ -3,16 +3,16 @@ services:
     image: mysql:8.0
     container_name: salotto_db
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: sport4u
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: adminpassword
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3307:3306"
+      - "${DB_PORT:-3307}:3306"
     volumes:
       - ./dump.sql:/docker-entrypoint-initdb.d/01-init.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -21,14 +21,14 @@ services:
     build: .
     container_name: salotto_app
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     environment:
-      PORT: 3000
-      DB_HOST: db
-      DB_USER: admin
-      DB_PASSWORD: adminpassword
-      DB_NAME: sport4u
-      JWT_SECRET: 0a9f2c8b7e3d4a1f9c0b6e5d2f8a4c7e1b9d0a6f3c5e7b8a2d4f9c6e1a0b
+      PORT: ${PORT:-3000}
+      DB_HOST: ${DB_HOST:-db}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ./server/uploads:/usr/src/app/server/uploads
     depends_on:
