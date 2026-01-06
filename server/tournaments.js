@@ -50,7 +50,7 @@ router.get('/mine', authenticateUser, async (req, res) => {
         const created_by = req.userId;
         
         const [rows] = await pool.query(
-            'SELECT id, name, sport, max_teams, start_date, description FROM tournaments WHERE created_by = ? ORDER BY start_date DESC',
+            'SELECT id, name, sport, max_teams, start_date, description FROM tournaments WHERE created_by = ? ORDER BY start_date ASC',
             [created_by]
         );
         

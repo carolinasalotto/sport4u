@@ -207,7 +207,7 @@ body{
     position: absolute;
     top: 40%;
     transform: translateY(-50%);
-    color: var(--primary-color);
+    color: white;
     background-color: transparent;
     border: none;
     width: 40px;
@@ -383,12 +383,16 @@ body{
 }
 
 .sport-badge {
-    background-color: var(--primary-color);
-    color: white;
+    display: inline-block;
     padding: 0.25rem 0.75rem;
+    background-color: var(--primary-lighter);
+    color: var(--primary-color);
     border-radius: 12px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     text-transform: capitalize;
+    white-space: nowrap;
+    margin-left: 0.5rem;
 }
 
 .tournament-details {

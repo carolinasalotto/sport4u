@@ -75,11 +75,23 @@ function displayResults(fields) {
         
         fieldsHTML += `
             <div class="field-card">
-                <h3>${field.name}</h3>
-                <p><strong>Sport:</strong> ${field.sport}</p>
-                <p><strong>Address:</strong> ${field.full_address}</p>
-                <p><strong>Opening Hours:</strong> ${field.open_from} - ${field.open_till}</p>
-                <a href="${fieldUrl}" class="view-details-btn">View Details</a>
+                <div class="field-card-header">
+                    <h3>${field.name}</h3>
+                    <span class="field-sport-badge">${field.sport}</span>
+                </div>
+                <div class="field-card-body">
+                    <div class="field-info-item">
+                        <i data-lucide="map-pin"></i>
+                        <span>${field.full_address}</span>
+                    </div>
+                    <div class="field-info-item">
+                        <i data-lucide="clock"></i>
+                        <span>${field.open_from} - ${field.open_till}</span>
+                    </div>
+                </div>
+                <div class="field-card-footer">
+                    <a href="${fieldUrl}" class="view-details-btn">View Details</a>
+                </div>
             </div>
         `;
     });
@@ -90,6 +102,9 @@ function displayResults(fields) {
             ${fieldsHTML}
         </div>
     `;
+    
+    // Initialize lucide icons for the new cards
+    lucide.createIcons();
 }
 
 // Load all fields on page load

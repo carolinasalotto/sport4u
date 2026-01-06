@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fields</title>
         <link rel="stylesheet" type="text/css" href="/components/header.css">
+        <link rel="stylesheet" type="text/css" href="/header2.css">
         <link rel="stylesheet" type="text/css" href="/components/footer.css">
         <link rel="stylesheet" type="text/css" href="/search-fields.css">
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body>
         <app-header></app-header>
-
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <input id="search-input" type="text" placeholder="Search field by name" style="flex: 1;">
-            <select id="sport-filter" style="padding: 8px;">
-                <option value="">All sports</option>
-                <option value="volleyball">Volleyball</option>
-                <option value="basketball">Basketball</option>
-                <option value="football">Football</option>
-            </select>
-        </div>
-
-        <div id="fields-results"></div>
-
+        <main>
+            <div class="fields-container">
+                <div class="search-filters">
+                    <input id="search-input" type="text" placeholder="Search field by name">
+                    <select id="sport-filter">
+                        <option value="">All sports</option>
+                        <option value="volleyball">Volleyball</option>
+                        <option value="basketball">Basketball</option>
+                        <option value="football">Football</option>
+                    </select>
+                </div>
+                <div id="fields-results"></div>
+            </div>
+        </main>
         <app-footer></app-footer>
         <script src="./auth.js"></script>
         <script src="./components/header.js"></script>

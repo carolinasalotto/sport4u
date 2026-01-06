@@ -62,3 +62,8 @@ function showError(message) {
 backButton.addEventListener('click', ()=>{
     window.history.go(-2);
 })
+
+// Focus on first input when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('username').focus();
+});

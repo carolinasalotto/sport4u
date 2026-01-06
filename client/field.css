@@ -4,34 +4,115 @@
   box-sizing: border-box;
 }
 
-#field-container{
-    display: flex;
-    flex-direction: row;
-    gap: 4rem;
-    width: 100%;
+body {
+    margin: 0;
 }
 
-#booking-container{
+main {
+    padding: 0 2rem;
+    padding-top: 0;
+}
+
+#back-button {
+    margin: 0;
+    padding: 0 0.5rem 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: opacity 0.2s;
+}
+
+#back-button:hover {
+    opacity: 0.7;
+}
+
+#back-button i {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#field-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    margin-top: 0;
+    padding: 0 1rem;
     display: flex;
     flex-direction: row;
+    gap: 2rem;
+}
+
+@media (max-width: 968px) {
+    #field-container {
+        flex-direction: column;
+    }
+    
+    #field-info {
+        width: 100%;
+    }
+}
+
+#booking-container {
     flex: 1;
-    border: 1px solid #00000050;
-    border-radius: 10px;
-    padding: 1rem;
-    margin: 1rem;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000010;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    
 }
 
-#field-info{
-    width: 30%;
+#field-info {
+    width: 350px;
+    background-color: #ffffff;
+    padding: 1.5rem;
+    padding-bottom: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid #00000010;
+    height: fit-content;
 }
-.field-image{
+
+.field-image {
     width: 100%;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
 
+#field-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 200;
+}
+
+#field-info p {
+    margin: 0.5rem 0;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+#field-info p:last-child {
+    margin-bottom: 0;
+}
+
+#field-info p:first-of-type {
+    color: var(--primary-color);
+    font-weight: 300;
+    text-transform: capitalize;
+    font-size: 1.1rem;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Calendar Styles */
 #calendar {
-    width: 50%;
+    width: 100%;
 }
 
 #calendar-header {
@@ -39,19 +120,23 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
 }
 
 #calendar-header h3 {
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
+    color: var(--primary-color);
+    font-family: 'Poppins', sans-serif;
 }
 
 #calendar-header button {
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-size: 1rem;
@@ -80,7 +165,7 @@
 #calendar-dates {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
+    gap: 0.2rem;
 }
 
 .date-cell {
@@ -92,6 +177,9 @@
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.9rem;
+    height: 3rem;
+    width: 3rem;
+    
 }
 
 .date-cell:hover {
@@ -136,11 +224,81 @@
     border-color: transparent;
 }
 
-#available-slots{
-    width: 50%;
-    height:200px;
+#slots-section {
+    padding-top: 1rem;
+    border-top: 2px solid #ddd;
 }
 
-.selected-slot{
+#slots-header {
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 200;
+}
+
+#available-slots {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0;
+}
+
+#available-slots button {
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    flex: 0 0 auto;
+}
+
+#available-slots button:hover:not(:disabled) {
+    background-color: var(--primary-lighter);
+    transform: translateY(-1px);
+}
+
+#available-slots button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#available-slots button.selected-slot {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+#available-slots button.selected-slot:hover {
     background-color: var(--primary-darker);
+    border-color: var(--primary-darker);
+}
+
+#book-field-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    align-self: flex-start;
+    margin-top: 0.5rem;
+}
+
+#book-field-button:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+#book-field-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #ccc;
 }

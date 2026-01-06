@@ -88,8 +88,10 @@ function displayBookings(bookings) {
                     <p class="booking-duration"><strong>Duration:</strong> ${durationHours} hour${durationHours !== 1 ? 's' : ''}</p>
                     <p class="booking-address"><strong>Address:</strong> ${booking.full_address}</p>
                 </div>
-                <a href="/field/${booking.field_id}" class="view-field-btn">View Field</a>
-                <button onclick="deleteBooking(${booking.id}, ${booking.field_id})" class="delete-button">Cancel Booking</button>
+                <div class="booking-actions">
+                    <button onclick="deleteBooking(${booking.id}, ${booking.field_id})" class="delete-booking-btn" data-booking-id="${booking.id}" data-field-id="${booking.field_id}"><i data-lucide="trash-2"></i></button>
+                    <a href="/field/${booking.field_id}" class="view-field-btn">View Field</a>
+                </div>
             </div>
         `;
         
@@ -101,6 +103,18 @@ function displayBookings(bookings) {
             ${bookingsHTML}
         </div>
     `;
+
+    // Attach event listeners to delete booking buttons
+    document.querySelectorAll('.delete-booking-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const bookingId = parseInt(btn.getAttribute('data-booking-id'));
+            const fieldId = parseInt(btn.getAttribute('data-field-id'));
+            deleteBooking(bookingId, fieldId);
+        });
+    });
+
+    // Initialize lucide icons for delete buttons
+    lucide.createIcons();
 
 }
 

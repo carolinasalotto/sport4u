@@ -6,29 +6,43 @@
 
 body {
     margin: 0;
+
 }
 
-/* Navbar styles for manage-tournaments page */
-.nav-chip {
-    border-color: transparent !important;
-    color: var(--primary-darker) !important;
-    background-color: white !important;
+main {
+    padding: 2rem;
+    padding-top: 0;
+}
+h2 {
+    padding: 1rem 0;
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-darker);
+    font-size: 2.5rem;
+    font-weight: 600;
 }
 
-.nav-chip:hover {
-    background-color: var(--primary-lighter) !important;
-    border: none !important;
+#create-tournament-btn {
+    padding: 0.875rem 1.75rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-bottom: 0.5rem;
 }
 
-.nav-chip.active {
-    border-color: var(--primary-darker) !important;
-    background-color: white !important;
+#create-tournament-btn:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-1px);
 }
 
-.nav-chip.active:hover {
-    border-color: var(--primary-darker) !important;
-    background-color: white !important;
+#create-tournament-btn:active {
+    transform: translateY(0);
 }
+
 
 .dialog-overlay {
     display: none;
@@ -49,67 +63,145 @@ body {
 
 .dialog-content {
     background-color: white;
-    padding: 2rem;
+    padding: 0;
     border-radius: 18px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 500px;
+    max-width: 550px;
     max-height: 90vh;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.dialog-header {
+    padding:0 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fafafa;
+    border-radius: 18px 18px 0 0;
+}
+
+.dialog-header h2 {
+    margin: 0;
+    color: var(--primary-darker);
+    font-size: 1.5rem;
+    font-weight: 200;
+    font-family: 'Poppins', sans-serif;
+}
+
+.dialog-close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #666;
+    transition: all 0.2s;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.dialog-close-btn:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.dialog-close-btn i {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .dialog-content form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .dialog-content .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.625rem;
 }
 
 .dialog-content .form-group label {
-    font-weight: 500;
+    font-weight: 600;
     color: #333;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
 }
 
 .dialog-content .form-group input[type="text"],
 .dialog-content .form-group input[type="number"],
 .dialog-content .form-group input[type="date"],
+.dialog-content .form-group input[type="time"],
 .dialog-content .form-group select,
 .dialog-content .form-group textarea {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 12px;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
     font-size: 1rem;
     width: 100%;
     font-family: inherit;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+.dialog-content .form-group input:hover,
+.dialog-content .form-group select:hover,
+.dialog-content .form-group textarea:hover {
+    border-color: #c0c0c0;
 }
 
 .dialog-content .form-group input:focus,
 .dialog-content .form-group select:focus,
 .dialog-content .form-group textarea:focus {
     outline: none;
-    border-color: var(--primary-darker);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-lighter);
+}
+
+.dialog-content .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
 }
 
 .dialog-buttons {
     display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
+    gap: 0.875rem;
+    margin-top: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
 }
 
 .dialog-buttons button {
     flex: 1;
-    padding: 0.75rem 1.5rem;
+    padding: 0.875rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+}
+
+.dialog-buttons button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dialog-buttons button:active {
+    transform: translateY(0);
 }
 
 #tournament-cancel-btn {
@@ -122,7 +214,7 @@ body {
 }
 
 #tournament-confirm-btn {
-    background-color: var(--primary-darker);
+    background-color: var(--primary-color);
     color: white;
 }
 
@@ -132,19 +224,31 @@ body {
 
 #tournament-delete-btn {
     background: none;
-    border: none;
+    border: 2px solid #dc3545;
     color: #dc3545;
-    padding: 0.75rem 0;
+    padding: 0.5rem 0.25rem;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
-    width: 100%;
+    width: 40%;
     margin-bottom: 0.5rem;
-    transition: color 0.3s;
+    border-radius: 10px;
+    transition: all 0.2s;
+    display: flex;
+    justify-content:center;
+    gap: 0.5rem;
+}
+
+#tournament-delete-btn svg {
+    width: 1rem;
+    height: 1rem;
 }
 
 #tournament-delete-btn:hover {
-    color: #c82333;
+    background-color: #dc3545;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
 
 #your-tournaments {
@@ -193,6 +297,19 @@ body {
     font-size: 1.25rem;
 }
 
+.sport-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--primary-lighter);
+    color: var(--primary-color);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+}
+
 .tournament-details {
     margin-bottom: 1rem;
 }
@@ -216,7 +333,7 @@ body {
 
 .details-tournament-btn {
     padding: 0.5rem 1rem;
-    background-color: var(--primary-darker);
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;

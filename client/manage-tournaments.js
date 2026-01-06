@@ -6,32 +6,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const createBtn = document.getElementById('create-tournament-btn');
     const dialog = document.getElementById('tournament-dialog');
     const cancelBtn = document.getElementById('tournament-cancel-btn');
+    const closeBtn = document.getElementById('dialog-close-btn');
     const deleteBtn = document.getElementById('tournament-delete-btn');
     const form = document.getElementById('tournament-form');
+    const dialogTitle = document.getElementById('dialog-title');
+
+    const closeDialog = () => {
+        dialog.classList.remove('active');
+        form.reset();
+        editingTournamentId = null;
+        document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+        deleteBtn.style.display = 'none';
+        dialogTitle.textContent = 'Create New Tournament';
+    };
 
     createBtn.addEventListener('click', () => {
         editingTournamentId = null;
         form.reset();
         document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
         deleteBtn.style.display = 'none';
+        dialogTitle.textContent = 'Create New Tournament';
         dialog.classList.add('active');
+        lucide.createIcons();
+        // Focus on first input after dialog is shown
+        setTimeout(() => {
+            document.getElementById('tournament-name').focus();
+        }, 100);
     });
 
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            closeDialog();
+        });
+    }
+
     cancelBtn.addEventListener('click', () => {
-        dialog.classList.remove('active');
-        form.reset();
-        editingTournamentId = null;
-        document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
-        deleteBtn.style.display = 'none';
+        closeDialog();
     });
 
     dialog.addEventListener('click', (e) => {
         if (e.target === dialog) {
-            dialog.classList.remove('active');
-            form.reset();
-            editingTournamentId = null;
-            document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
-            deleteBtn.style.display = 'none';
+            closeDialog();
         }
     });
 
@@ -72,11 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const result = await response.json();
                 console.log(editingTournamentId ? 'Tournament updated:' : 'Tournament created:', result);
-                dialog.classList.remove('active');
-                form.reset();
-                editingTournamentId = null;
-                document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
-                deleteBtn.style.display = 'none';
+                closeDialog();
                 await loadTournaments();
             } else {
                 const error = await response.json();
@@ -120,6 +131,7 @@ async function performDeleteTournament(tournamentId) {
         form.reset();
         editingTournamentId = null;
         document.getElementById('tournament-confirm-btn').textContent = 'Confirm';
+        document.getElementById('dialog-title').textContent = 'Create New Tournament';
         deleteBtn.style.display = 'none';
         await loadTournaments();
     } catch (error) {
@@ -260,11 +272,19 @@ function openEditTournamentForm(tournamentData) {
     // Update button text
     document.getElementById('tournament-confirm-btn').textContent = 'Save Changes';
     
+    // Update dialog title
+    document.getElementById('dialog-title').textContent = 'Edit Tournament';
+    
     // Show delete button
     document.getElementById('tournament-delete-btn').style.display = 'block';
     
     // Show dialog
     dialog.classList.add('active');
+    lucide.createIcons();
+    // Focus on first input after dialog is shown
+    setTimeout(() => {
+        document.getElementById('tournament-name').focus();
+    }, 100);
 }
 
 // Display tournaments in the UI

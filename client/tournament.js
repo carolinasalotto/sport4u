@@ -61,17 +61,19 @@ function displayTournamentInfo(tournament, isCreator) {
             <span class="sport-badge">${tournament.sport}</span>
         </div>
         <div class="tournament-details-section">
-            <div class="detail-item">
-                <strong>Start Date:</strong>
-                <span>${dateStr} at ${timeStr}</span>
-            </div>
-            <div class="detail-item">
-                <strong>Maximum Teams:</strong>
-                <span>${tournament.max_teams}</span>
-            </div>
-            <div class="detail-item">
-                <strong>Created By:</strong>
-                <span>${createdByName}</span>
+            <div class="detail-items-inline">
+                <div class="detail-item">
+                    <strong>Start Date:</strong>
+                    <span>${dateStr} at ${timeStr}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Maximum Teams:</strong>
+                    <span>${tournament.max_teams}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Created By:</strong>
+                    <span>${createdByName}</span>
+                </div>
             </div>
             ${tournament.description ? `
             <div class="detail-item description">
@@ -82,14 +84,19 @@ function displayTournamentInfo(tournament, isCreator) {
         </div>
         ${tournament.teams && tournament.teams.length > 0 ? `
         <div class="teams-section">
-            <h2>Teams (${tournament.teams.length}/${tournament.max_teams})</h2>
+            <div class="teams-section-header">
+                <h2>Teams (${tournament.teams.length}/${tournament.max_teams})</h2>
+                ${isCreator ? `
+                <button id="create-team-btn" class="create-team-btn">Create Team</button>
+                ` : ''}
+            </div>
             <div class="teams-grid">
                 ${tournament.teams.map(team => `
                     <div class="team-card" data-team-id="${team.id}">
                         <div class="team-card-header">
                             <h3>${team.name}</h3>
                             ${isCreator ? `
-                            <button class="delete-team-btn" data-team-id="${team.id}" data-team-name="${team.name}">Delete</button>
+                            <button class="delete-team-btn" data-team-id="${team.id}" data-team-name="${team.name}"><i data-lucide="trash-2"></i></button>
                             ` : ''}
                         </div>
                         <div class="players-list">
@@ -108,23 +115,27 @@ function displayTournamentInfo(tournament, isCreator) {
         </div>
         ` : `
         <div class="teams-section">
-            <h2>Teams (0/${tournament.max_teams})</h2>
+            <div class="teams-section-header">
+                <h2>Teams (0/${tournament.max_teams})</h2>
+                ${isCreator ? `
+                <button id="create-team-btn" class="create-team-btn">Create Team</button>
+                ` : ''}
+            </div>
             <p class="no-teams">No teams registered yet.</p>
         </div>
         `}
-        ${isCreator ? `
-        <div class="tournament-actions-section">
-            <button id="create-team-btn" class="create-team-btn">Create Team</button>
-            <button id="generate-matches-btn" class="generate-matches-btn">Generate Match Schedule</button>
+        <div id="matches-section" class="matches-section">
+            <div class="matches-section-header">
+                <h2>Match Schedule</h2>
+                ${isCreator ? `
+                <button id="generate-matches-btn" class="generate-matches-btn">Generate Match Schedule</button>
+                ` : ''}
+            </div>
+            <div id="matches-container" style="display: none;"></div>
         </div>
-        ` : ''}
         <div id="standings-section" class="standings-section" style="display: none;">
             <h2>Standings</h2>
             <div id="standings-container"></div>
-        </div>
-        <div id="matches-section" class="matches-section" style="display: none;">
-            <h2>Match Schedule</h2>
-            <div id="matches-container"></div>
         </div>
     `;
     
@@ -146,6 +157,9 @@ function displayTournamentInfo(tournament, isCreator) {
             deleteTeam(teamId, teamName);
         });
     });
+    
+    // Initialize lucide icons for delete buttons
+    lucide.createIcons();
     
     // Attach event listener to generate matches button if it exists
     const generateMatchesBtn = document.getElementById('generate-matches-btn');
@@ -276,8 +290,8 @@ async function loadMatches() {
         
         if (!response.ok) {
             if (response.status === 404) {
-                // No matches found, hide matches section
-                document.getElementById('matches-section').style.display = 'none';
+                // No matches found, hide matches container
+                document.getElementById('matches-container').style.display = 'none';
                 return;
             }
             throw new Error('Failed to fetch matches');
@@ -286,24 +300,23 @@ async function loadMatches() {
         const matches = await response.json();
         
         if (matches.length === 0) {
-            document.getElementById('matches-section').style.display = 'none';
+            document.getElementById('matches-container').style.display = 'none';
             return;
         }
         
         displayMatches(matches, isTournamentCreator);
     } catch (error) {
         console.error('Error loading matches:', error);
-        // Don't show error to user, just hide matches section
-        document.getElementById('matches-section').style.display = 'none';
+        // Don't show error to user, just hide matches container
+        document.getElementById('matches-container').style.display = 'none';
     }
 }
 
 // Display matches
 function displayMatches(matches, isCreator) {
-    const matchesSection = document.getElementById('matches-section');
     const matchesContainer = document.getElementById('matches-container');
     
-    matchesSection.style.display = 'block';
+    matchesContainer.style.display = 'block';
     
     matchesContainer.innerHTML = `
         <table class="matches-table">

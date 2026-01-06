@@ -1,0 +1,22 @@
+/* Navbar styles for manage-tournaments page */
+.nav-chip {
+    border-color: transparent !important;
+    color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
+.nav-chip:hover {
+    background-color: var(--primary-lighter) !important;
+    border: none !important;
+}
+
+.nav-chip.active {
+    border-color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
+.nav-chip.active:hover {
+    border-color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+

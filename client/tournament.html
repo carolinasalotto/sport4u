@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tournament</title>
         <link rel="stylesheet" type="text/css" href="/tournament.css">
         <link rel="stylesheet" type="text/css" href="/components/header.css">
+        <link rel="stylesheet" type="text/css" href="/header2.css">
         <link rel="stylesheet" type="text/css" href="/components/footer.css">
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body>
         <app-header></app-header>
-        <button id="back-button">Back</button>
-        <div id="tournament-container">
-            <div id="tournament-info">
+        <main>
+            <button id="back-button"><i data-lucide="chevron-left"></i></button>
+            <div id="tournament-container">
+                <div id="tournament-info">
+                </div>
             </div>
-        </div>
-
-        <div id="create-team-dialog" class="dialog-overlay">
-            <div class="dialog-content">
-                <form id="create-team-form">
-                    <h2>Create Team</h2>
-                    <div class="form-group">
-                        <label for="team-name">Team Name</label>
-                        <input type="text" id="team-name" name="teamName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Players</label>
-                        <div id="players-container">
-                            <!-- Player rows will be added here -->
-                        </div>
-                        <button type="button" id="add-player-btn" class="add-player-btn">Add Player</button>
-                    </div>
-                    <div class="dialog-buttons">
-                        <button type="button" id="cancel-team-btn">Cancel</button>
-                        <button type="submit" id="submit-team-btn">Create Team</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div id="edit-result-dialog" class="dialog-overlay">
-            <div class="dialog-content">
-                <form id="edit-result-form">
-                    <h2>Edit Match Result</h2>
-                    <div class="form-group">
-                        <label id="result-team1-label"></label>
-                        <input type="number" id="result-score1" name="score1" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label id="result-team2-label"></label>
-                        <input type="number" id="result-score2" name="score2" min="0" required>
-                    </div>
-                    <div class="dialog-buttons">
-                        <button type="button" id="cancel-result-btn">Cancel</button>
-                        <button type="submit" id="submit-result-btn">Update Result</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     
+            <div id="create-team-dialog" class="dialog-overlay">
+                <div class="dialog-content">
+                    <form id="create-team-form">
+                        <h2>Create Team</h2>
+                        <div class="form-group">
+                            <label for="team-name">Team Name</label>
+                            <input type="text" id="team-name" name="teamName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Players</label>
+                            <div id="players-container">
+                                <!-- Player rows will be added here -->
+                            </div>
+                            <button type="button" id="add-player-btn" class="add-player-btn">Add Player</button>
+                        </div>
+                        <div class="dialog-buttons">
+                            <button type="button" id="cancel-team-btn">Cancel</button>
+                            <button type="submit" id="submit-team-btn">Create Team</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    
+            <div id="edit-result-dialog" class="dialog-overlay">
+                <div class="dialog-content">
+                    <form id="edit-result-form">
+                        <h2>Edit Match Result</h2>
+                        <div class="form-group">
+                            <label id="result-team1-label"></label>
+                            <input type="number" id="result-score1" name="score1" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label id="result-team2-label"></label>
+                            <input type="number" id="result-score2" name="score2" min="0" required>
+                        </div>
+                        <div class="dialog-buttons">
+                            <button type="button" id="cancel-result-btn">Cancel</button>
+                            <button type="submit" id="submit-result-btn">Update Result</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+        </main>
+
         <app-footer></app-footer>
         <script src="/auth.js"></script>
         <script src="/components/header.js"></script>

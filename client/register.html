@@ -10,7 +10,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <button id="back-button">Back</button>
+    <button id="back-button"><i data-lucide="chevron-left"></i></button>
     <div class="register-container">
         <div class="register-card">
             <h1 class="register-title">Sign up</h1>
@@ -63,6 +63,9 @@
     <app-footer></app-footer>
     <script src="./components/footer.js"></script>
     <script src="register.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
 

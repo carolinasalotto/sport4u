@@ -1,60 +1,75 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manage Tournaments</title>
         <link rel="stylesheet" type="text/css" href="/components/header.css">
+        <link rel="stylesheet" type="text/css" href="/header2.css">
         <link rel="stylesheet" type="text/css" href="/components/footer.css">
         <link rel="stylesheet" type="text/css" href="/manage-tournaments.css">
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body>
         <app-header></app-header>
-
-        <h2>Your Tournaments</h2>
-        <button id="create-tournament-btn">Create New Tournament</button>
-        <div id="your-tournaments">
-
-        </div>
-
-        <div id="tournament-dialog" class="dialog-overlay">
-            <div class="dialog-content">
-                <form id="tournament-form">
-                    <div class="form-group">
-                        <label for="tournament-name">Name</label>
-                        <input type="text" id="tournament-name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tournament-sport">Sport</label>
-                        <select id="tournament-sport" name="sport" required>
-                            <option value="">Select sport</option>
-                            <option value="football">Football</option>
-                            <option value="volleyball">Volleyball</option>
-                            <option value="basketball">Basketball</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="tournament-max-teams">Maximum number of teams</label>
-                        <input type="number" id="tournament-max-teams" name="maxTeams" min="2" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tournament-start-date">Start date</label>
-                        <input type="date" id="tournament-start-date" name="startDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tournament-start-time">Start time</label>
-                        <input type="time" id="tournament-start-time" name="startTime" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tournament-description">Description</label>
-                        <textarea id="tournament-description" name="description" rows="4"></textarea>
-                    </div>
-                    <button type="button" id="tournament-delete-btn" style="display: none;">Delete Tournament</button>
-                    <div class="dialog-buttons">
-                        <button type="button" id="tournament-cancel-btn">Cancel</button>
-                        <button type="submit" id="tournament-confirm-btn">Confirm</button>
-                    </div>
-                </form>
+        <main>
+            <h2>Your Tournaments</h2>
+            <button id="create-tournament-btn">Create New Tournament</button>
+            <div id="your-tournaments">
+    
             </div>
-        </div>
+    
+            <div id="tournament-dialog" class="dialog-overlay">
+                <div class="dialog-content">
+                    <div class="dialog-header">
+                        <h2 id="dialog-title">Create New Tournament</h2>
+                        <button type="button" id="dialog-close-btn" class="dialog-close-btn">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                    <form id="tournament-form">
+                        <div class="form-group">
+                            <label for="tournament-name">Name</label>
+                            <input type="text" id="tournament-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-sport">Sport</label>
+                            <select id="tournament-sport" name="sport" required>
+                                <option value="">Select sport</option>
+                                <option value="football">Football</option>
+                                <option value="volleyball">Volleyball</option>
+                                <option value="basketball">Basketball</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-max-teams">Maximum number of teams</label>
+                            <input type="number" id="tournament-max-teams" name="maxTeams" min="2" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-start-date">Start date</label>
+                            <input type="date" id="tournament-start-date" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-start-time">Start time</label>
+                            <input type="time" id="tournament-start-time" name="startTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournament-description">Description</label>
+                            <textarea id="tournament-description" name="description" rows="4"></textarea>
+                        </div>
+                        <button type="button" id="tournament-delete-btn" style="display: none;">
+                            <i data-lucide="trash-2"></i>
+                            Delete Tournament
+                        </button>
+                        <div class="dialog-buttons">
+                            <button type="button" id="tournament-cancel-btn">Cancel</button>
+                            <button type="submit" id="tournament-confirm-btn">Confirm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
         <app-footer></app-footer>
         <script src="./auth.js"></script>
         <script src="./components/header.js"></script>
