@@ -432,7 +432,7 @@ body{
 }
 
 .details-tournament-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 .tournament-date {
@@ -528,7 +528,7 @@ body{
 }
 
 .details-user-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 #users-container {

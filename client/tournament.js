@@ -261,25 +261,44 @@ async function performDeleteTeam(teamId) {
 
 // Generate match schedule
 async function generateMatchSchedule() {
+    const generateBtn = document.getElementById('generate-matches-btn');
+    const originalContent = generateBtn.innerHTML;
+    const startTime = Date.now();
+    
+    // Show loading spinner
+    generateBtn.innerHTML = '<span class="spinner"></span> Generating...';
+    generateBtn.disabled = true;
+    
     try {
         const response = await fetch(`/api/tournaments/${tournamentId}/matches/generate`, {
             method: 'POST',
             credentials: 'include'
         });
         
+        // Ensure minimum 1 second loading time
+        const elapsed = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsed);
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+        
         if (!response.ok) {
             const error = await response.json();
             alert(error.error || 'Failed to generate match schedule');
+            generateBtn.innerHTML = originalContent;
+            generateBtn.disabled = false;
             return;
         }
         
-       
-        
         // Reload matches to display them
         await loadMatches();
+        
+        // Restore button
+        generateBtn.innerHTML = originalContent;
+        generateBtn.disabled = false;
     } catch (error) {
         console.error('Error generating match schedule:', error);
         alert('Connection error. Please try again later.');
+        generateBtn.innerHTML = originalContent;
+        generateBtn.disabled = false;
     }
 }
 

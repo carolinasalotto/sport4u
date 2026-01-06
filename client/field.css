@@ -34,7 +34,7 @@ main {
 }
 
 #field-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 2rem auto;
     margin-top: 0;
     padding: 0 1rem;
@@ -197,6 +197,28 @@ main {
     font-family: 'Poppins', sans-serif;
 }
 
+.field-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+}
+
+.field-info-item svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    color: var(--primary-color);
+}
+
+.field-info-item span {
+    flex: 1;
+}
+
 /* Calendar Styles */
 #calendar {
     width: 100%;
@@ -228,6 +250,11 @@ main {
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.2s;
+}
+
+#calendar-header button i {
+    width: 1rem;
+    height: 1rem;
 }
 
 #calendar-header button:hover {
@@ -381,7 +408,7 @@ main {
 }
 
 #book-field-button:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 #book-field-button:disabled {

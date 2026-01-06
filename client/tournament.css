@@ -161,7 +161,7 @@ main {
 }
 
 .create-team-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 .generate-matches-btn {
@@ -178,6 +178,29 @@ main {
 
 .generate-matches-btn:hover {
     background-color: var(--primary-darker);
+}
+
+.generate-matches-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.generate-matches-btn .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Teams Section */
@@ -556,7 +579,7 @@ main {
 }
 
 #submit-team-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 /* Matches Section */

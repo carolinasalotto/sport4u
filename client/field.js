@@ -22,9 +22,18 @@ async function fetchFieldInfo(id) {
     <img class="field-image" src="/uploads/fields/${id}.jpg">
     <h3>${data.name}</h3>
     <p>${data.sport}</p>
-    <p>${data.city}, ${data.street} ${data.street_number}</p>
-    <p>Opening Hours: ${removeSeconds(data.open_from)} - ${removeSeconds(data.open_till)}
+    <div class="field-info-item">
+        <i data-lucide="map-pin"></i>
+        <span>${data.city}, ${data.street} ${data.street_number}</span>
+    </div>
+    <div class="field-info-item">
+        <i data-lucide="clock"></i>
+        <span>${removeSeconds(data.open_from)} - ${removeSeconds(data.open_till)}</span>
+    </div>
     `;
+    
+    // Initialize lucide icons for the new elements
+    lucide.createIcons();
 }
 
 

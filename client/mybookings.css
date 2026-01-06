@@ -177,7 +177,7 @@ main {
 }
 
 .view-field-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 .no-bookings {
@@ -332,7 +332,7 @@ main {
 }
 
 .fab-button:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
     transform: scale(1.05);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }

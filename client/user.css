@@ -185,7 +185,7 @@
 }
 
 .details-tournament-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 /* Responsive Styles */

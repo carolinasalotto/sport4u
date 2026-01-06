@@ -347,7 +347,7 @@ h2 {
 }
 
 .details-tournament-btn:hover {
-    background-color: #218838;
+    background-color: var(--primary-darker);
 }
 
 .edit-tournament-btn {
