@@ -14,22 +14,21 @@
     <body>
         <app-header></app-header>
         <main>
+            <h2>My Bookings</h2>
+            <button id="book-field-btn">Book Field</button>
             <div class="my-bookings-container">
                 <div id="bookings-results"></div>
             </div>
         </main>
         <app-footer></app-footer>
-        <button id="fab-button" class="fab-button" title="Browse Fields">
-            <i data-lucide="plus"></i>
-        </button>
         <script src="./auth.js"></script>
         <script src="./components/header.js"></script>
         <script src="./components/footer.js"></script>
         <script src="./mybookings.js"></script>
         <script>
             lucide.createIcons();
-            // Initialize FAB button
-            document.getElementById('fab-button').addEventListener('click', () => {
+            // Initialize Book Field button
+            document.getElementById('book-field-btn').addEventListener('click', () => {
                 window.location.href = '/fields.html';
             });
         </script>

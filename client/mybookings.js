@@ -98,7 +98,6 @@ function displayBookings(bookings) {
     });
     
     resultsContainer.innerHTML = `
-        <h2>Your Bookings (${bookings.length})</h2>
         <div class="bookings-grid">
             ${bookingsHTML}
         </div>
