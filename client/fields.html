@@ -7,7 +7,15 @@
     <body>
         <app-header></app-header>
 
-        <input id="search-input" type="text" placeholder="Search field by name">
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input id="search-input" type="text" placeholder="Search field by name" style="flex: 1;">
+            <select id="sport-filter" style="padding: 8px;">
+                <option value="">All sports</option>
+                <option value="volleyball">Volleyball</option>
+                <option value="basketball">Basketball</option>
+                <option value="football">Football</option>
+            </select>
+        </div>
 
         <div id="fields-results"></div>
 

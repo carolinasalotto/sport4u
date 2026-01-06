@@ -1,3 +1,5 @@
+@import url('colors.css');
+
 * {
   box-sizing: border-box;
 }
@@ -46,7 +48,7 @@
 }
 
 #calendar-header button {
-    background: #007bff;
+    background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 5px;
@@ -94,13 +96,13 @@
 
 .date-cell:hover {
     background-color: #f0f0f0;
-    border-color: #007bff;
+    border-color: var(--primary-color);
 }
 
 .date-cell.selected {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
-    border-color: #007bff;
+    border-color: var(--primary-color);
     font-weight: 600;
 }
 
@@ -110,7 +112,7 @@
 }
 
 .date-cell.today.selected {
-    border-color: #007bff;
+    border-color: var(--primary-color);
 }
 
 .date-cell.empty {

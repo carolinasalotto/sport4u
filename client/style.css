@@ -1,3 +1,5 @@
+@import url('colors.css');
+
 * {
   box-sizing: border-box;
 }
@@ -10,6 +12,7 @@ body{
     min-height: 100vh;
     padding: 0 2rem;
 }
+
 
 
 
@@ -34,12 +37,12 @@ body{
 }
 
 .tab-button:hover {
-    color: #007bff;
+    color: var(--primary-color);
 }
 
 .tab-button.active {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
     
 }
 
@@ -110,7 +113,7 @@ body{
 .form-group input[type="date"]:focus,
 .form-group input[type="time"]:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--primary-color);
 }
 
 
@@ -119,7 +122,7 @@ body{
 .search-button {
     width: 100%;
     padding: 0.75rem 1.5rem;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -214,6 +217,7 @@ body{
     padding: 2rem;
     width: fit-content;
     margin: 0 auto;
+    max-width: 100%;
 }
 
 .book-fields-section.active {
@@ -294,12 +298,12 @@ body{
 
 .tournament-header h3 {
     margin: 0;
-    color: #007bff;
+    color: var(--primary-color);
     font-size: 1.25rem;
 }
 
 .sport-badge {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -399,7 +403,7 @@ body{
 
 .user-header h3 {
     margin: 0;
-    color: #007bff;
+    color: var(--primary-color);
     font-size: 1.25rem;
 }
 
@@ -470,5 +474,15 @@ body{
 
 .form-group input[type="text"]:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--primary-color);
+}
+
+#background{
+    width: 100%;
+    height: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #1a451d;
+    z-index: -1;
 }

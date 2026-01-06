@@ -1,4 +1,5 @@
 const searchInput = document.getElementById('search-input');
+const sportFilter = document.getElementById('sport-filter');
 const resultsContainer = document.getElementById('fields-results');
 
 let searchTimeout;
@@ -13,18 +14,35 @@ searchInput.addEventListener('input', async (e) => {
     
     // Debounce search to avoid too many API calls
     searchTimeout = setTimeout(() => {
-        searchFields(query);
+        searchFields();
     }, 300);
 });
 
+// Handle sport filter change
+sportFilter.addEventListener('change', () => {
+    searchFields();
+});
+
 // Function to search fields
-async function searchFields(query) {
+async function searchFields() {
     try {
+        const query = searchInput.value.trim();
+        const sport = sportFilter.value;
+        
         // Show loading state
         resultsContainer.innerHTML = '<p>Searching...</p>';
         
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (query) {
+            params.set('q', query);
+        }
+        if (sport) {
+            params.set('sport', sport);
+        }
+        
         // Make API call
-        const url = query ? `/api/fields?q=${encodeURIComponent(query)}` : '/api/fields';
+        const url = params.toString() ? `/api/fields?${params.toString()}` : '/api/fields';
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -75,5 +93,5 @@ function displayResults(fields) {
 }
 
 // Load all fields on page load
-searchFields('');
+searchFields();
 

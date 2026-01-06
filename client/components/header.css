@@ -1,3 +1,5 @@
+@import url('../colors.css');
+
 * {
   box-sizing: border-box;
 }
@@ -17,7 +19,7 @@ nav > ul > li {
 }
 
 nav > ul > li:hover {
-    color: #007bff;
+    color: var(--primary-color);
 }
 
 nav > ul > li > a {

@@ -9,49 +9,54 @@ const e = require('express');
 router.get('/', async (req, res) => {
     
     // Validate date query parameter
-    const { q, limit } = req.query;
+    const { q, limit, sport } = req.query;
 
     let limit_condition = "";
+    let where_conditions = [];
+    let query_params = [];
 
     const parsedLimit = Number(limit);
     if( parsedLimit ){
         limit_condition = " LIMIT ?";
     }
     
-
-    if(!q || q == ""){
-
-        const [rows] = await pool.query(`
-            SELECT 
-                f.*,
-                a.city,
-                a.street,
-                a.street_number,
-                a.zip_code,
-                CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
-            FROM fields f
-            INNER JOIN addresses a ON f.address_id = a.id
-            ${limit_condition}
-        `, [parsedLimit]);
-        res.json(rows);
+    // Add name filter if query is provided
+    if(q && q != ""){
+        where_conditions.push("f.name LIKE ?");
+        query_params.push(`%${q}%`);
     }
-    else{
-
-        const [rows] = await pool.query(`
-            SELECT 
-                f.*,
-                a.city,
-                a.street,
-                a.street_number,
-                a.zip_code,
-                CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
-            FROM fields f
-            INNER JOIN addresses a ON f.address_id = a.id
-            WHERE f.name LIKE ?
-            ${limit_condition}
-        `, [`%${q}%`, parsedLimit]);
-        res.json(rows);
+    
+    // Add sport filter if provided
+    if(sport && sport != ""){
+        where_conditions.push("f.sport = ?");
+        query_params.push(sport);
     }
+    
+    // Build WHERE clause
+    let where_clause = "";
+    if(where_conditions.length > 0){
+        where_clause = "WHERE " + where_conditions.join(" AND ");
+    }
+    
+    // Add limit to params if it exists
+    if(parsedLimit){
+        query_params.push(parsedLimit);
+    }
+
+    const [rows] = await pool.query(`
+        SELECT 
+            f.*,
+            a.city,
+            a.street,
+            a.street_number,
+            a.zip_code,
+            CONCAT(a.street, ' ', a.street_number, ', ', a.zip_code, ' ', a.city) AS full_address
+        FROM fields f
+        INNER JOIN addresses a ON f.address_id = a.id
+        ${where_clause}
+        ${limit_condition}
+    `, query_params);
+    res.json(rows);
 });
 
 //get info based on id

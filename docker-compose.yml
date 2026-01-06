@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: salotto_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: sport4u
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: adminpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    container_name: salotto_app
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_USER: admin
+      DB_PASSWORD: adminpassword
+      DB_NAME: sport4u
+      JWT_SECRET: 0a9f2c8b7e3d4a1f9c0b6e5d2f8a4c7e1b9d0a6f3c5e7b8a2d4f9c6e1a0b
+    volumes:
+      - ./server/uploads:/usr/src/app/server/uploads
+    depends_on:
+      db:
+        condition: service_healthy

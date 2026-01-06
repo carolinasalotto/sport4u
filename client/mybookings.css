@@ -1,3 +1,5 @@
+@import url('colors.css');
+
 * {
   box-sizing: border-box;
 }
@@ -55,12 +57,12 @@
 
 .booking-header h3 {
     margin: 0;
-    color: #007bff;
+    color: var(--primary-color);
     font-size: 1.25rem;
 }
 
 .sport-badge {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -93,7 +95,7 @@
     display: inline-block;
     margin-top: 1rem;
     padding: 0.5rem 1rem;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     text-decoration: none;
     border-radius: 4px;

@@ -1,3 +1,5 @@
+@import url('colors.css');
+
 * {
   box-sizing: border-box;
 }
@@ -64,7 +66,7 @@
 .dialog-content .form-group select:focus,
 .dialog-content .form-group textarea:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--primary-color);
 }
 
 .dialog-buttons {
@@ -94,7 +96,7 @@
 }
 
 #tournament-confirm-btn {
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
 }
 
@@ -161,7 +163,7 @@
 
 .tournament-header h3 {
     margin: 0;
-    color: #007bff;
+    color: var(--primary-color);
     font-size: 1.25rem;
 }
 
@@ -207,7 +209,7 @@
 
 .edit-tournament-btn {
     padding: 0.5rem 1rem;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
