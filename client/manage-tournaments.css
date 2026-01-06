@@ -4,6 +4,32 @@
   box-sizing: border-box;
 }
 
+body {
+    margin: 0;
+}
+
+/* Navbar styles for manage-tournaments page */
+.nav-chip {
+    border-color: transparent !important;
+    color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
+.nav-chip:hover {
+    background-color: var(--primary-lighter) !important;
+    border: none !important;
+}
+
+.nav-chip.active {
+    border-color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
+.nav-chip.active:hover {
+    border-color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
 .dialog-overlay {
     display: none;
     position: fixed;
@@ -66,7 +92,7 @@
 .dialog-content .form-group select:focus,
 .dialog-content .form-group textarea:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--primary-darker);
 }
 
 .dialog-buttons {
@@ -96,12 +122,12 @@
 }
 
 #tournament-confirm-btn {
-    background-color: var(--primary-color);
+    background-color: var(--primary-darker);
     color: white;
 }
 
 #tournament-confirm-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-darker);
 }
 
 #tournament-delete-btn {
@@ -163,7 +189,7 @@
 
 .tournament-header h3 {
     margin: 0;
-    color: var(--primary-color);
+    color: var(--primary-darker);
     font-size: 1.25rem;
 }
 
@@ -190,7 +216,7 @@
 
 .details-tournament-btn {
     padding: 0.5rem 1rem;
-    background-color: #28a745;
+    background-color: var(--primary-darker);
     color: white;
     border: none;
     border-radius: 6px;
@@ -209,7 +235,7 @@
 
 .edit-tournament-btn {
     padding: 0.5rem 1rem;
-    background-color: var(--primary-color);
+    background-color: var(--primary-darker);
     color: white;
     border: none;
     border-radius: 6px;
@@ -220,7 +246,7 @@
 }
 
 .edit-tournament-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-darker);
 }
 
 .tournament-date {

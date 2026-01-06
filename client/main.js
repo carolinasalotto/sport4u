@@ -56,6 +56,7 @@ async function fetchFields() {
         fieldElement.innerHTML = `
         <img class="field-img" src="/uploads/fields/${field.id}.jpg">
         <h3>${field.name}</h3>
+        <p class="field-city">${field.city}</p>
         `;
         fieldsElement.appendChild(fieldElement);
         fieldElement.addEventListener('click', ()=>{

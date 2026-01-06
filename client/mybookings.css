@@ -4,6 +4,28 @@
   box-sizing: border-box;
 }
 
+/* Navbar styles for mybookings page */
+.nav-chip {
+    border-color: transparent !important;
+    color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
+.nav-chip:hover {
+    background-color: var(--primary-lighter) !important;
+    border: none !important;
+}
+
+.nav-chip.active {
+    border-color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
+.nav-chip.active:hover {
+    border-color: var(--primary-darker) !important;
+    background-color: white !important;
+}
+
 .my-bookings-container {
     max-width: 1200px;
     margin: 2rem auto;
@@ -57,12 +79,12 @@
 
 .booking-header h3 {
     margin: 0;
-    color: var(--primary-color);
+    color: var(--primary-darker);
     font-size: 1.25rem;
 }
 
 .sport-badge {
-    background-color: var(--primary-color);
+    background-color: var(--primary-darker);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -95,7 +117,7 @@
     display: inline-block;
     margin-top: 1rem;
     padding: 0.5rem 1rem;
-    background-color: var(--primary-color);
+    background-color: var(--primary-darker);
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -107,7 +129,7 @@
 }
 
 .view-field-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-darker);
 }
 
 .no-bookings {

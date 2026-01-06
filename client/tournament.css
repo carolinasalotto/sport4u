@@ -114,7 +114,7 @@
 
 .create-team-btn {
     padding: 0.75rem 1.5rem;
-    background-color: #28a745;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -141,7 +141,7 @@
 }
 
 .generate-matches-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-darker);
 }
 
 /* Teams Section */
@@ -464,7 +464,7 @@
 }
 
 .add-player-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-darker);
 }
 
 .dialog-buttons {
@@ -494,7 +494,7 @@
 }
 
 #submit-team-btn {
-    background-color: #28a745;
+    background-color: var(--primary-color);
     color: white;
 }
 
@@ -600,7 +600,7 @@
 }
 
 .standings-table thead {
-    background-color: #28a745;
+    background-color: var(--primary-color);
     color: white;
 }
 
@@ -642,6 +642,6 @@
 
 .standings-table td:nth-child(3) {
     font-weight: 600;
-    color: #28a745;
+    color: var(--primary-color);
 }
 

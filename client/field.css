@@ -59,7 +59,7 @@
 }
 
 #calendar-header button:hover {
-    background: #0056b3;
+    background: var(--primary-darker);
 }
 
 #calendar-weekdays {
@@ -107,7 +107,7 @@
 }
 
 .date-cell.today {
-    border:  2px solid #28a745;
+    border:  2px solid var(--primary-color);
     font-weight: 600;
 }
 
@@ -142,5 +142,5 @@
 }
 
 .selected-slot{
-    background-color: #0056b3;
+    background-color: var(--primary-darker);
 }

@@ -163,7 +163,7 @@
 
 .details-tournament-btn {
     padding: 0.5rem 1rem;
-    background-color: #28a745;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;

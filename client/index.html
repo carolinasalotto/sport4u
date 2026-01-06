@@ -2,14 +2,20 @@
 <html>
 
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Plus+Jakarta+Sans:wght@200;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="/components/header.css">
+    <link rel="stylesheet" type="text/css" href="/components/footer.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
     <div id="background"></div>
     <app-header></app-header>
-
+    <h1 id="title">Sport4u</h1>
+    <h3 id="subtitle">Book fields, organize matches, and manage tournaments all in one platform.</h3>
     <div id="tabs-parent">
         <ul class="tabs">
             <li><button class="tab-button active" id="book-fields">Book fields</button></li>
@@ -78,8 +84,13 @@
                                 <option value="23">23</option>
                             </select>
                         </div>
+                        <div class="form-group search-button-wrapper">
+                            <label style="visibility: hidden;">Search</label>
+                            <button type="submit" class="search-button" id="search-icon-button">
+                                <i data-lucide="search"></i>
+                            </button>
+                        </div>
                     </div>
-                    <button type="submit" class="search-button">Search</button>
                 </form>
             </div>
             <div id="tournaments-content" class="tab-content">
@@ -115,9 +126,9 @@
         </div>
     </div>
     <div id="book-fields-section" class="book-fields-section">
-        <div id="fileds-title-container">
+        <div id="fields-title-container">
             <h2>Book a field</h2>
-            <a href="/fields.html">See All</a>
+            <a href="/fields.html">See All <i data-lucide="chevron-right"></i></a>
         </div>
         
         <div id="fields-container">
@@ -140,9 +151,14 @@
         </div>
         <div id="users-container"></div>
     </div>
+    <app-footer></app-footer>
     <script src="./auth.js"></script>
     <script src="./components/header.js"></script>
+    <script src="./components/footer.js"></script>
     <script src="main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
