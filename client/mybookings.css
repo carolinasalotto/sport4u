@@ -346,3 +346,88 @@ main {
     height: 1.75rem;
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+    main {
+        padding: 0 1rem;
+    }
+
+    .my-bookings-container {
+        padding: 0;
+        margin: 1rem auto;
+    }
+
+    .bookings-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .booking-card {
+        padding: 1rem;
+    }
+
+    .booking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .booking-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dialog-modal {
+        width: 95%;
+    }
+
+    .fab-button {
+        width: 3rem;
+        height: 3rem;
+        bottom: 1.5rem;
+        right: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0 0.5rem;
+    }
+
+    .my-bookings-container {
+        margin: 0.5rem auto;
+    }
+
+    .booking-card {
+        padding: 0.75rem;
+    }
+
+    .booking-header h3 {
+        font-size: 1rem;
+    }
+
+    .booking-details p {
+        font-size: 0.875rem;
+    }
+
+    .booking-details strong {
+        font-size: 1rem;
+    }
+
+    .view-field-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .dialog-modal {
+        width: 98%;
+        margin: 1rem;
+    }
+
+    .dialog-header,
+    .dialog-body,
+    .dialog-footer {
+        padding: 1rem;
+    }
+}
+

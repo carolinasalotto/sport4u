@@ -5,7 +5,11 @@ class AppHeader extends HTMLElement {
     this.innerHTML = `
     <header class="app-header">
       <nav>
-        <ul class="nav-chips">
+        <button id="menu-toggle" class="menu-toggle" aria-label="Toggle menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="menu-overlay" id="menu-overlay"></div>
+        <ul class="nav-chips" id="nav-menu">
             <li><a href="/index.html" class="nav-chip" data-page="index"><i data-lucide="home"></i> Home</a></li>
             <li><a href="/manage-tournaments.html" class="nav-chip" id="manage-tournaments-link" data-page="manage-tournaments"><i data-lucide="trophy"></i> Manage tournaments</a></li>
             <li><a href="/mybookings.html" class="nav-chip" id="my-bookings-link" data-page="mybookings"><i data-lucide="calendar-check"></i> My bookings</a></li>
@@ -20,6 +24,9 @@ class AppHeader extends HTMLElement {
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
+    
+    // Setup hamburger menu toggle
+    this.setupMenuToggle();
     
     // Set active state based on current page
     this.setActivePage();
@@ -102,6 +109,74 @@ class AppHeader extends HTMLElement {
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
+    }
+  }
+
+  setupMenuToggle() {
+    const menuToggle = this.querySelector('#menu-toggle');
+    const navMenu = this.querySelector('#nav-menu');
+    const loginButton = this.querySelector('#login-button');
+    const menuOverlay = this.querySelector('#menu-overlay');
+    
+    const toggleMenu = () => {
+      const isOpen = navMenu.classList.contains('menu-open');
+      navMenu.classList.toggle('menu-open');
+      loginButton.classList.toggle('menu-open');
+      if (menuOverlay) {
+        menuOverlay.classList.toggle('active');
+      }
+      
+      // Update icon
+      const icon = menuToggle.querySelector('i');
+      if (!isOpen) {
+        icon.setAttribute('data-lucide', 'x');
+        document.body.style.overflow = 'hidden';
+      } else {
+        icon.setAttribute('data-lucide', 'menu');
+        document.body.style.overflow = '';
+      }
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    };
+    
+    const closeMenu = () => {
+      navMenu.classList.remove('menu-open');
+      loginButton.classList.remove('menu-open');
+      if (menuOverlay) {
+        menuOverlay.classList.remove('active');
+      }
+      const icon = menuToggle.querySelector('i');
+      icon.setAttribute('data-lucide', 'menu');
+      document.body.style.overflow = '';
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    };
+    
+    if (menuToggle && navMenu) {
+      menuToggle.addEventListener('click', toggleMenu);
+      
+      // Close menu when clicking overlay
+      if (menuOverlay) {
+        menuOverlay.addEventListener('click', closeMenu);
+      }
+      
+      // Close menu when clicking on a link
+      const navLinks = navMenu.querySelectorAll('.nav-chip');
+      navLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
+      
+      // Close menu when clicking login button
+      loginButton.addEventListener('click', closeMenu);
+      
+      // Close menu when window is resized to desktop size
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && navMenu.classList.contains('menu-open')) {
+          closeMenu();
+        }
+      });
     }
   }
 

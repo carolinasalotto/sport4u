@@ -53,6 +53,93 @@ main {
     }
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+    main {
+        padding: 0 1rem;
+    }
+
+    #field-container {
+        margin: 1rem auto;
+        padding: 0;
+        gap: 1rem;
+    }
+
+    #booking-container {
+        padding: 1rem;
+    }
+
+    #field-info {
+        padding: 1rem;
+    }
+
+    #calendar-header h3 {
+        font-size: 1rem;
+    }
+
+    .date-cell {
+        height: 2.5rem;
+        width: 2.5rem;
+        font-size: 0.8rem;
+    }
+
+    #available-slots {
+        gap: 0.5rem;
+    }
+
+    #available-slots button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0 0.5rem;
+    }
+
+    #field-container {
+        margin: 0.5rem auto;
+    }
+
+    #booking-container,
+    #field-info {
+        padding: 0.75rem;
+    }
+
+    #calendar-weekdays {
+        gap: 0.25rem;
+    }
+
+    .weekday {
+        font-size: 0.75rem;
+        padding: 0.25rem 0;
+    }
+
+    #calendar-dates {
+        gap: 0.1rem;
+    }
+
+    .date-cell {
+        height: 2rem;
+        width: 2rem;
+        font-size: 0.75rem;
+    }
+
+    #slots-header {
+        font-size: 1rem;
+    }
+
+    #available-slots button {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    #book-field-button {
+        width: 100%;
+    }
+}
+
 #booking-container {
     flex: 1;
     background-color: #ffffff;

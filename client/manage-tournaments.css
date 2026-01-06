@@ -477,3 +477,90 @@ h2 {
     }
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    .tournaments-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .tournament-card {
+        padding: 1rem;
+    }
+
+    .dialog-content {
+        width: 95%;
+        max-width: none;
+    }
+
+    .dialog-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .dialog-content form {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0.5rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        padding: 0.5rem 0;
+    }
+
+    #create-tournament-btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .tournament-card {
+        padding: 0.75rem;
+    }
+
+    .tournament-header h3 {
+        font-size: 1rem;
+    }
+
+    .dialog-content {
+        width: 98%;
+        max-height: 95vh;
+    }
+
+    .dialog-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .dialog-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .dialog-content form {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .dialog-buttons {
+        flex-direction: column;
+    }
+
+    .dialog-buttons button {
+        width: 100%;
+    }
+
+    #tournament-delete-btn {
+        width: 100%;
+    }
+}
+
