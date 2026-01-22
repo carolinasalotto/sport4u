@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const pool = require('./db');
 const { authenticateUser } = require('./utils');
-const e = require('express');
 
 //get all fields
 router.get('/', async (req, res) => {

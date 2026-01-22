@@ -23,6 +23,7 @@ app.use('/api/tournaments', require('./tournaments'));
 app.use('/api/matches', require('./matches'));
 app.use('/api/users', require('./users'));
 
+
 // Route handler for field detail page
 app.get('/field/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/field.html'));
@@ -39,7 +40,7 @@ app.get('/user/:id', (req, res) => {
 });
 
 
-// Serve static files (frontend) - comes after API routes
+// Serve static files (frontend) 
 app.use(express.static(path.join(__dirname, '../client')));
 
 app.use('/uploads/fields', express.static(path.join(__dirname, 'uploads/fields')))

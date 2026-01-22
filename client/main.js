@@ -48,8 +48,6 @@ if (document.getElementById('book-fields').classList.contains('active')) {
 async function fetchFields() {
     const response = await fetch('/api/fields?limit=6');
     const data = await response.json();
-    console.log("awfwaf");
-    console.log(data);
     const fieldsElement = document.getElementById('fields-row');
     data.forEach(field => {
         const fieldElement = document.createElement('div');

@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
             }
         }
         
-        query += ' ORDER BY start_date DESC';
+        query += ' ORDER BY start_date ASC';
         
         const [rows] = await pool.query(query, params);
         

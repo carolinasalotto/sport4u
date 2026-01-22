@@ -312,13 +312,21 @@ async function bookField(){
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({date, start_hour, end_hour}),
         });
         
         if (response.ok) {
             window.location.href = '/mybookings.html';
         } else {
+            if (response.status === 401) {
+                // Not authenticated -> send to login, and come back here after login
+                const next = encodeURIComponent(window.location.pathname + window.location.search);
+                window.location.href = `/login.html?next=${next}`;
+                return;
+            }
             const error = await response.json();
+            console.error('Booking failed:', error);
         }
     } catch (error) {
         console.error('Error booking field:', error);

@@ -26,8 +26,8 @@ router.get('/', authenticateUser, async (req, res) => {
             FROM bookings b
             INNER JOIN fields f ON b.field_id = f.id
             INNER JOIN addresses a ON f.address_id = a.id
-            WHERE b.booked_by = ?
-            ORDER BY b.booked_datetime DESC
+            WHERE b.booked_by = ? AND b.booked_datetime >= NOW()
+            ORDER BY b.booked_datetime ASC
         `;
         
         const [rows] = await pool.query(query, [userId]);

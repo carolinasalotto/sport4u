@@ -13,7 +13,7 @@ loginForm.addEventListener('submit', async (e) => {
     errorMessage.textContent = '';
 
     try {
-        // TODO: Replace with actual API endpoint
+        
         const response = await fetch('/api/auth/signin', {
             method: 'POST',
             headers: {
@@ -23,8 +23,10 @@ loginForm.addEventListener('submit', async (e) => {
         });
 
         if (response.ok) {
-            // Redirect to home page
-            window.location.href = '/';
+            // Redirect back to where user came from (if provided)
+            const urlParams = new URLSearchParams(window.location.search);
+            const next = urlParams.get('next');
+            window.location.href = next ? next : '/';
         } else {
             const error = await response.json();
             showError(error.message || 'Invalid credentials. Please try again.');
